@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <title>emrplan</title>
+    <meta charset="utf-8">
+
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            margin-inline: 0;
+            box-sizing: border-box;
+        }
+    </style>
+
+    <script src="dberta.js"></script>
+    <script src="utils.js"></script>
+    <script src="main.js"></script>
+</head>
+
+<body>
+
+    <form id="data" spellcheck="false">
+        <style>
+            @scope {
+                table {
+/*                     border: 1px solid black;
+                    border-spacing: 8px;*/
+                    border-collapse: collapse; 
+                }
+
+                th {
+                    vertical-align: top;
+                }
+
+                input {
+                    width: 80px;
+                    font-size: 12px;
+                }
+            }
+        </style>
+        <table>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col span="2">
+            <col span="2">
+            <col span="2">
+            <col span="2">
+            <thead>
+                <tr>
+                    <th rowspan="2">Name</th>
+                    <th rowspan="2"><input name="staffname" data-staff="physician1" value="med1" required /></th>
+                    <th rowspan="2"><input name="staffname" data-staff="physician2" value="med2" required></th>
+                    <th rowspan="2"><input name="staffname" data-staff="physician3" value="med3" required></th>
+                    <th colspan="2"><input name="staffname" data-staff="psychologist1" value="psy1" required></th>
+                    <th colspan="2"><input name="staffname" data-staff="psychologist2" value="psy2" required></th>
+                    <th colspan="2"><input name="staffname" data-staff="psychologist3" value="psy3" required></th>
+                    <th colspan="2"><input name="staffname" data-staff="psychologist4" value="psy4" required></th>
+                </tr>
+                <tr>
+                    <th>Test</th>
+                    <th>Befund</th>
+                    <th>Test</th>
+                    <th>Befund</th>
+                    <th>Test</th>
+                    <th>Befund</th>
+                    <th>Test</th>
+                    <th>Befund</th>
+                </tr>
+            </thead>
+            <tbody>
+                <style>
+                    @scope {
+                        input {
+                            text-transform: uppercase;
+
+                            &:invalid {
+                                outline: 2px solid red
+                            }
+                        }
+                    }
+                </style>
+                <tr>
+                    <td><input name="username"></td>
+                    <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="0"></td>
+                    <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="0"></td>
+                    <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="0"></td>
+                    <td><input name="appointment" data-staff="psychologist1" data-task="test" data-user="0"></td>
+                    <td><input name="appointment" data-staff="psychologist1" data-task="report" data-user="0"></td>
+                    <td><input name="appointment" data-staff="psychologist2" data-task="test" data-user="0"></td>
+                    <td><input name="appointment" data-staff="psychologist2" data-task="report" data-user="0"></td>
+                    <td><input name="appointment" data-staff="psychologist3" data-task="test" data-user="0"></td>
+                    <td><input name="appointment" data-staff="psychologist3" data-task="report" data-user="0"></td>
+                    <td><input name="appointment" data-staff="psychologist4" data-task="test" data-user="0"></td>
+                    <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="0"></td>
+                </tr>
+                <tr>
+                    <td><input name="username"></td>
+                    <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="1"></td>
+                    <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="1"></td>
+                    <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="1"></td>
+                    <td><input name="appointment" data-staff="psychologist1" data-task="test" data-user="1"></td>
+                    <td><input name="appointment" data-staff="psychologist1" data-task="report" data-user="1"></td>
+                    <td><input name="appointment" data-staff="psychologist2" data-task="test" data-user="1"></td>
+                    <td><input name="appointment" data-staff="psychologist2" data-task="report" data-user="1"></td>
+                    <td><input name="appointment" data-staff="psychologist3" data-task="test" data-user="1"></td>
+                    <td><input name="appointment" data-staff="psychologist3" data-task="report" data-user="1"></td>
+                    <td><input name="appointment" data-staff="psychologist4" data-task="test" data-user="1"></td>
+                    <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="1"></td>
+                </tr>
+                <tr>
+                    <td><input name="username"></td>
+                    <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="2"></td>
+                    <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="2"></td>
+                    <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="2"></td>
+                    <td><input name="appointment" data-staff="psychologist1" data-task="test" data-user="2"></td>
+                    <td><input name="appointment" data-staff="psychologist1" data-task="report" data-user="2"></td>
+                    <td><input name="appointment" data-staff="psychologist2" data-task="test" data-user="2"></td>
+                    <td><input name="appointment" data-staff="psychologist2" data-task="report" data-user="2"></td>
+                    <td><input name="appointment" data-staff="psychologist3" data-task="test" data-user="2"></td>
+                    <td><input name="appointment" data-staff="psychologist3" data-task="report" data-user="2"></td>
+                    <td><input name="appointment" data-staff="psychologist4" data-task="test" data-user="2"></td>
+                    <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="2"></td>
+                </tr>
+            </tbody>
+        </table>
+        <main>
+            <style>
+                @scope {
+                    output {
+                        white-space: pre;
+                    }
+                }
+            </style>
+            <article>
+                <header>
+                    <h2>Termine für 0</h2>
+                </header>
+                <h3>Montag</h3>
+                <output name="monday0"></output>
+                <h3>dienstag</h3>
+                <output name="tuesday0"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für 1</h2>
+                </header>
+                <h3>Montag</h3>
+                <output name="monday1"></output>
+                <h3>dienstag</h3>
+                <output name="tuesday1"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für 2</h2>
+                </header>
+                <h3>Montag</h3>
+                <output name="monday2"></output>
+                <h3>dienstag</h3>
+                <output name="tuesday2" contenteditable="true"></output>
+            </article>
+        </main>
+    </form>
+</body>
+
+</html>
