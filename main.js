@@ -137,63 +137,6 @@ const main = async (event) => {
                     })
                 }
             })
-        })/* .then((tx, arr1) => {
-            console.log(tx, arr1)
-            for (const user of [...Array(3).keys()]) {
-                tx.appointments.queryAnd(
-                    'active', dberta.eq(1),
-                    'user', dberta.lt(user)
-                ).then(arr2 => {
-                    const arr = arr1.concat(arr2);
-                    arr.sort((a, b) => (a.user - b.user) || (a.start - b.start));
-
-                    console.log(user, arr)
-                })
-            }
-        }); */
-        return
-        berta.read('appointments').then(tx => {
-            return tx.appointments.queryAnd('active', dberta.eq(1));
-        }).then(arr => {
-
-            arr.sort((a, b) => (a.user - b.user) || (a.start - b.start));
-
-            for (const user of [...Array(3).keys()]) {
-
-                arr.forEach((item, i, arr) => {
-                    if (Number.isInteger(item?.user) && item.user !== user) {
-                        console.log(item.user, user, item)
-                        return
-                    };
-
-                    const [item1, item2] = arr.slice(i, i + 2);
-
-                    if (item2 !== undefined) {
-                        const
-                            start1 = item1.start,
-                            end1 = start1 + durations[item1.task],
-                            start2 = item2.start,
-                            end2 = start2 + durations[item2.task];
-
-                        console.assert(Number.isInteger(start1), start1);
-                        console.assert(Number.isInteger(start2), start2);
-                        console.assert(Number.isInteger(end1), end1);
-                        console.assert(Number.isInteger(end2), end2);
-
-                        if ((start1 < end2) && (end1 > start2)) {
-                            if (!item.user) {
-                                return;
-                            }
-
-                            arr.splice(i + 1, 1);
-                        }
-                    }
-
-                    console.log(user, gett(item.start), item.task)
-                });
-            }
-        }).catch(err => {
-            console.error(err.message);
         });
     }
 
@@ -224,6 +167,9 @@ const main = async (event) => {
                         console.error(err.message);
                     });
             }
+
+            // prevent resetting on reset
+            elem.setAttribute('value', elem.value);
         }); // change
 
         // load data
@@ -238,6 +184,94 @@ const main = async (event) => {
         });
     });
 
+    timelist.addEventListener('beforetoggle', (event) => {
+        console.dir(event)
+    });
+
+    timelist.addEventListener('toggle', (event) => {
+        console.dir(event)
+    });
+
+
+
+    const from = {}
+    const to = {}
+
+    // STAFF
+    from.staff = 'staff-physician1';
+    to.staff = 'staff-psychologist4';
+
+    data.elements.staff.forEach((elem) => {
+
+        elem.id = [elem.name, elem.value].join('-');
+
+        elem.addEventListener('change', (event) => {
+            berta.write('settings').then(tx => {
+                if (elem.checked) {
+                    tx.settings.put({
+                        id: elem.id,
+                        checked: 1
+                    })
+                } else {
+                    tx.settings.delete(elem.id);
+                }
+            }).catch(err => {
+                console.error(err.message);
+            });
+        });
+
+    });
+
+    // load data
+    berta.read('settings').then(tx => {
+        data.elements.staff.forEach((elem) => elem.checked=false);
+
+        tx.settings.getAll(dberta.between(from.staff, to.staff))
+            .then(arr => {
+                arr.forEach(elem=>{
+                    data.elements[elem.id].checked = true;
+                });
+            }).catch(err => {
+                console.error(err.message);
+            });
+    });
+
+    // PARTICIPANTS
+    from.participants = 'participants-0';
+    to.participants = 'participants-' + (
+        data.elements.participants.length - 1);
+
+    data.elements.participants.forEach((elem) => {
+
+        elem.id = [elem.name, elem.value].join('-');
+
+        elem.addEventListener('change', (event) => {
+            berta.write('settings').then(tx => {
+
+                tx.settings.delete(dberta.between(from.participants, to.participants))
+                    .then(() => {
+                        tx.settings.put({
+                            id: elem.id,
+                            checked: 1
+                        })
+                    }).catch(err => {
+                        console.error(err.message);
+                    });
+            });
+        });
+
+    });
+
+    // load data
+    berta.read('settings').then(tx => {
+        tx.settings.get(dberta.between(from.participants, to.participants))
+            .then((result) => {
+                data.elements[result.id].checked = true;
+            }).catch(err => {
+                console.error(err.message);
+            });
+    });
+
     // APPOINTMENT
     data.elements.appointment.forEach((elem) => {
 
@@ -247,6 +281,13 @@ const main = async (event) => {
         elem.addEventListener('input', (event) => {
             elem.setCustomValidity('');
         });
+
+        // elem.addEventListener('click', (event) => {
+        //     timelist.togglePopover({
+        //         source: event.target,
+        //         force: true
+        //     })
+        // });
 
         elem.addEventListener('change', (event) => {
 

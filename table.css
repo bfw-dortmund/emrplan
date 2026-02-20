@@ -1,0 +1,85 @@
+@scope (table) {
+
+    :scope {
+        border-collapse: collapse;
+        table-layout: fixed;
+        width: 1000px;
+    }
+
+    col:nth-of-type(n+2) {
+        visibility: collapse;
+    }
+
+    col:is(form:has([value="physician1"]:checked) col:nth-of-type(8n+2)) {
+        visibility: visible;
+    }
+
+    col:is(form:has([value="physician2"]:checked) col:nth-of-type(8n+3)) {
+        visibility: visible;
+    }
+
+    col:is(form:has([value="physician3"]:checked) col:nth-of-type(8n+4)) {
+        visibility: visible;
+    }
+
+    col:is(form:has([value="psychologist1"]:checked) col:nth-of-type(8n+5)) {
+        visibility: visible;
+    }
+
+    col:is(form:has([value="psychologist2"]:checked) col:nth-of-type(8n+6)) {
+        visibility: visible;
+    }
+
+    col:is(form:has([value="psychologist3"]:checked) col:nth-of-type(8n+7)) {
+        visibility: visible;
+    }
+
+    col:is(form:has([value="psychologist4"]:checked) col:nth-of-type(8n+8)) {
+        visibility: visible;
+    }
+}
+
+@scope (thead) {
+
+    input {
+        width: 100%;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    th {
+        vertical-align: top;
+        border: 1px solid black;
+        border-width: 0 1px;
+    }
+}
+
+@scope (tbody) {
+
+    input {
+        width: 80px;
+        font-size: 12px;
+        text-transform: uppercase;
+
+        &:invalid {
+            outline: 2px solid red
+        }
+    }
+
+    /* PARTICIPANTS VISIBILITY */
+    tr:nth-of-type(n+1) {
+        visibility: collapse;
+    }
+
+    tr:is(form:has([value="0"]:checked) :nth-last-of-type(n+3)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([value="1"]:checked) :nth-last-of-type(n+2)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([value="2"]:checked) :nth-last-of-type(n+1)) {
+        visibility: visible;
+    }
+}

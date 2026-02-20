@@ -15,6 +15,8 @@
         }
     </style>
 
+    <link href="table.css" rel="stylesheet">
+
     <script src="dberta.js"></script>
     <script src="utils.js"></script>
     <script src="main.js"></script>
@@ -22,25 +24,24 @@
 
 <body>
 
-    <form id="data" spellcheck="false">
-        <style>
-            @scope {
-                table {
-/*                     border: 1px solid black;
-                    border-spacing: 8px;*/
-                    border-collapse: collapse; 
-                }
-
-                th {
-                    vertical-align: top;
-                }
-
-                input {
-                    width: 80px;
-                    font-size: 12px;
-                }
-            }
-        </style>
+    <form id="data" spellcheck="false" autocomplete="off" onsubmit="event.preventDefault()">
+        <header>
+            <input type="button" popovertarget="timetable" popovertargetaction="show" value="show">
+            <div>
+                <label><input type="radio" name="participants" value="0">1</label>
+                <label><input type="radio" name="participants" value="1">2</label>
+                <label><input type="radio" name="participants" value="2" checked>3</label>
+            </div>
+            <div>
+                <label><input type="checkbox" name="staff" value="physician1" checked>physician1</label>
+                <label><input type="checkbox" name="staff" value="physician2" checked>physician2</label>
+                <label><input type="checkbox" name="staff" value="physician3" checked>physician3</label>
+                <label><input type="checkbox" name="staff" value="psychologist1" checked>psychologist1</label>
+                <label><input type="checkbox" name="staff" value="psychologist2" checked>psychologist2</label>
+                <label><input type="checkbox" name="staff" value="psychologist3" checked>psychologist3</label>
+                <label><input type="checkbox" name="staff" value="psychologist4" checked>psychologist4</label>
+            </div>
+        </header>
         <table>
             <col>
             <col>
@@ -72,20 +73,12 @@
                     <th>Befund</th>
                 </tr>
             </thead>
+            <div id="timelist" popover>
+                abc
+            </div>
             <tbody>
-                <style>
-                    @scope {
-                        input {
-                            text-transform: uppercase;
-
-                            &:invalid {
-                                outline: 2px solid red
-                            }
-                        }
-                    }
-                </style>
                 <tr>
-                    <td><input name="username"></td>
+                    <td><input name="username" onchange="this.setAttribute('value', event.target.value)"></td>
                     <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="0"></td>
                     <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="0"></td>
                     <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="0"></td>
@@ -127,8 +120,11 @@
                     <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="2"></td>
                 </tr>
             </tbody>
+            <tfoot>
+                <tr><input type="reset" value="reset"></tr>
+            </tfoot>
         </table>
-        <main>
+        <main id="timetable" popover="hint">
             <style>
                 @scope {
                     output {
