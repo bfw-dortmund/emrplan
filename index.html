@@ -13,6 +13,15 @@
             margin-inline: 0;
             box-sizing: border-box;
         }
+
+        select,
+        ::picker(select) {
+            appearance: base-select;
+        }
+
+        select:open::picker-icon {
+            rotate: 180deg;
+        }
     </style>
 
     <link href="table.css" rel="stylesheet">
@@ -26,13 +35,28 @@
 
     <form id="data" spellcheck="false" autocomplete="off" onsubmit="event.preventDefault()">
         <header>
-            <input type="button" popovertarget="timetable" popovertargetaction="show" value="show">
+            <select name="staff" multiple="true" size="1">
+                <option value="physician1" selected>1</option>
+                <option value="physician2" selected>2</option>
+                <option value="physician3" selected>3</option>
+                <option value="psychologist1" selected>4</option>
+                <option value="psychologist2" selected>5</option>
+                <option value="psychologist3" selected>6</option>
+                <option value="psychologist4">7</option>
+            </select>
+
+            <select name="participants">
+                <option value="0" selected>1 Teilnehmer</option>
+                <option value="1" selected>2 Teilnehmer</option>
+                <option value="2" selected>3 Teilnehmer</option>
+            </select>
+<!--             <input type="button" popovertarget="timetable" popovertargetaction="show" value="show">
             <div>
                 <label><input type="radio" name="participants" value="0">1</label>
                 <label><input type="radio" name="participants" value="1">2</label>
                 <label><input type="radio" name="participants" value="2" checked>3</label>
-            </div>
-            <div>
+            </div> -->
+<!--             <div>
                 <label><input type="checkbox" name="staff" value="physician1" checked>physician1</label>
                 <label><input type="checkbox" name="staff" value="physician2" checked>physician2</label>
                 <label><input type="checkbox" name="staff" value="physician3" checked>physician3</label>
@@ -40,7 +64,7 @@
                 <label><input type="checkbox" name="staff" value="psychologist2" checked>psychologist2</label>
                 <label><input type="checkbox" name="staff" value="psychologist3" checked>psychologist3</label>
                 <label><input type="checkbox" name="staff" value="psychologist4" checked>psychologist4</label>
-            </div>
+            </div> -->
         </header>
         <table>
             <col>

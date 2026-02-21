@@ -198,78 +198,78 @@ const main = async (event) => {
     const to = {}
 
     // STAFF
-    from.staff = 'staff-physician1';
-    to.staff = 'staff-psychologist4';
+    data.elements.staff.id = 'settings-selected-staff';
+    data.elements.staff.addEventListener('change', (event) => {
+        const user = parseInt(data.elements.participants.value);
+        const options = Array.from(event.target, a => [a.value, a.selected]);
 
-    data.elements.staff.forEach((elem) => {
+        berta.write('settings', 'appointments').then(tx => {
+            const value = Object.fromEntries(options);
+            value.id = data.elements.staff.id;
 
-        elem.id = [elem.name, elem.value].join('-');
+            tx.settings.put(value).then(() => {
+                options.forEach(option => {
 
-        elem.addEventListener('change', (event) => {
-            berta.write('settings').then(tx => {
-                if (elem.checked) {
-                    tx.settings.put({
-                        id: elem.id,
-                        checked: 1
-                    })
-                } else {
-                    tx.settings.delete(elem.id);
-                }
-            }).catch(err => {
-                console.error(err.message);
-            });
-        });
+                    const [value, selected] = option;
 
-    });
-
-    // load data
-    berta.read('settings').then(tx => {
-        data.elements.staff.forEach((elem) => elem.checked=false);
-
-        tx.settings.getAll(dberta.between(from.staff, to.staff))
-            .then(arr => {
-                arr.forEach(elem=>{
-                    data.elements[elem.id].checked = true;
-                });
-            }).catch(err => {
-                console.error(err.message);
-            });
-    });
-
-    // PARTICIPANTS
-    from.participants = 'participants-0';
-    to.participants = 'participants-' + (
-        data.elements.participants.length - 1);
-
-    data.elements.participants.forEach((elem) => {
-
-        elem.id = [elem.name, elem.value].join('-');
-
-        elem.addEventListener('change', (event) => {
-            berta.write('settings').then(tx => {
-
-                tx.settings.delete(dberta.between(from.participants, to.participants))
-                    .then(() => {
-                        tx.settings.put({
-                            id: elem.id,
-                            checked: 1
-                        })
+                    tx.appointments.updateAnd('user', dberta.between(0, user), 'staff', value, {
+                        active: selected * 1
                     }).catch(err => {
                         console.error(err.message);
                     });
-            });
+                });
+            }).then(() => {
+                validate();
+            })
+        }).catch(err => {
+            console.error(err.message);
         });
-
     });
 
     // load data
     berta.read('settings').then(tx => {
-        tx.settings.get(dberta.between(from.participants, to.participants))
-            .then((result) => {
-                data.elements[result.id].checked = true;
-            }).catch(err => {
-                console.error(err.message);
+        tx.settings.get(data.elements.staff.id).then(obj => {
+            Array.from(data.elements.staff).forEach(option => {
+                option.selected = obj[option.value];
             });
+        })
+    }).catch(err => {
+        console.error(err.message);
+    });
+
+    // PARTICIPANTS
+    data.elements.participants.id = 'settings-selected-participants';
+    data.elements.participants.addEventListener('change', (event) => {
+
+        const user = parseInt(event.target.value);
+
+        berta.write('settings', 'appointments').then(tx => {
+
+            tx.settings.put({
+                id: event.target.id,
+                value: user
+            }).then(() => {
+                tx.appointments.updateAnd('user', dberta.between(0, user), {
+                    active: 1
+                });
+
+            }).then(() => {
+                tx.appointments.updateAnd('user', dberta.between(user + 1, 10), {
+                    active: 0
+                });
+
+            }).then(() => { data.elements.staff.dispatchEvent(new Event('change')) });
+        }).catch(err => {
+            console.error(err.message);
+        });
+    });
+
+    // load data
+    berta.read('settings').then(tx => {
+        tx.settings.get(data.elements.participants.id).then((obj) => {
+            data.elements.participants.value = obj.value;
+        })
+
     });
 
     // APPOINTMENT
