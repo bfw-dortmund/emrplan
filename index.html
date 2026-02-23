@@ -22,6 +22,29 @@
         select:open::picker-icon {
             rotate: 180deg;
         }
+
+        textarea {
+            resize: none;
+
+            &:invalid {
+                outline: 2px solid red
+            }
+        }
+
+        @page a4 {
+            size: a4 portrait;
+        }
+
+        @media print {
+            /*             table, footer, nav {
+                display: none;
+            } */
+
+            article {
+                /*                 page: a4;
+                break-after: page; */
+            }
+        }
     </style>
 
     <link href="table.css" rel="stylesheet">
@@ -33,7 +56,7 @@
 
 <body>
 
-    <form id="data" spellcheck="false" autocomplete="off" onsubmit="event.preventDefault()">
+    <form id="data" spellcheck="false" autocomplete="off" onsubmit="return false">
         <header>
             <select name="staff" multiple="true" size="1">
                 <option value="physician1" selected>1</option>
@@ -50,21 +73,9 @@
                 <option value="1" selected>2 Teilnehmer</option>
                 <option value="2" selected>3 Teilnehmer</option>
             </select>
-<!--             <input type="button" popovertarget="timetable" popovertargetaction="show" value="show">
-            <div>
-                <label><input type="radio" name="participants" value="0">1</label>
-                <label><input type="radio" name="participants" value="1">2</label>
-                <label><input type="radio" name="participants" value="2" checked>3</label>
-            </div> -->
-<!--             <div>
-                <label><input type="checkbox" name="staff" value="physician1" checked>physician1</label>
-                <label><input type="checkbox" name="staff" value="physician2" checked>physician2</label>
-                <label><input type="checkbox" name="staff" value="physician3" checked>physician3</label>
-                <label><input type="checkbox" name="staff" value="psychologist1" checked>psychologist1</label>
-                <label><input type="checkbox" name="staff" value="psychologist2" checked>psychologist2</label>
-                <label><input type="checkbox" name="staff" value="psychologist3" checked>psychologist3</label>
-                <label><input type="checkbox" name="staff" value="psychologist4" checked>psychologist4</label>
-            </div> -->
+
+            <button type="button" command="show-modal" commandfor="timetable">timetable</button>
+            <button type="button" command="show-modal" commandfor="dlgglobals">Globals</button>
         </header>
         <table>
             <col>
@@ -148,42 +159,102 @@
                 <tr><input type="reset" value="reset"></tr>
             </tfoot>
         </table>
-        <main id="timetable" popover="hint">
+        <dialog id="timetable">
             <style>
                 @scope {
+                    :scope {
+                        border: none;
+                        width: 100vw;
+                        max-width: 100vw;
+                        height: 100vh;
+                        max-height: 100vh;
+                        overflow: hidden;
+
+                        &:open {
+                            display: flex;
+                        }
+                    }
+
+                    article {
+                        width: 210mm;
+                        height: 297mm;
+                        background-color: white;
+                        margin: auto;
+                        flex: 1;
+                    }
+
+                    @media print {
+                        /*             table, footer, nav {
+                display: none;
+            } */
+
+                        article {
+                            page: a4;
+                            break-after: page;
+                        }
+                    }
+
+                    main {
+                        display: grid;
+                        flex-flow: column;
+                        gap: 16px;
+                        flex: 1;
+                        overflow: scroll;
+                        background-color: lightgray;
+                    }
+
+                    nav {
+                        width: 200px;
+                        background-color: red;
+                    }
+
                     output {
                         white-space: pre;
                     }
                 }
             </style>
-            <article>
-                <header>
-                    <h2>Termine für 0</h2>
-                </header>
-                <h3>Montag</h3>
-                <output name="monday0"></output>
-                <h3>dienstag</h3>
-                <output name="tuesday0"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für 1</h2>
-                </header>
-                <h3>Montag</h3>
-                <output name="monday1"></output>
-                <h3>dienstag</h3>
-                <output name="tuesday1"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für 2</h2>
-                </header>
-                <h3>Montag</h3>
-                <output name="monday2"></output>
-                <h3>dienstag</h3>
-                <output name="tuesday2" contenteditable="true"></output>
-            </article>
-        </main>
+            <nav>
+                <button type="button" command="close" commandfor="timetable">schließen</button>
+            </nav>
+            <main>
+                <article>
+                    <header>
+                        <h2>Termine für 0</h2>
+                    </header>
+                    <h3>Montag</h3>
+                    <output name="monday"></output>
+                    <h3>dienstag</h3>
+                    <output name="tuesday"></output>
+                </article>
+                <article>
+                    <header>
+                        <h2>Termine für 1</h2>
+                    </header>
+                    <h3>Montag</h3>
+                    <output name="monday"></output>
+                    <h3>dienstag</h3>
+                    <output name="tuesday"></output>
+                </article>
+                <article>
+                    <header>
+                        <h2>Termine für 2</h2>
+                    </header>
+                    <h3>Montag</h3>
+                    <output name="monday"></output>
+                    <h3>dienstag</h3>
+                    <output name="tuesday" contenteditable="true"></output>
+                </article>
+            </main>
+        </dialog>
+        <dialog id="dlgglobals">
+            <fieldset>
+                <legend>Globals</legend>
+                <textarea name="globals" cols="50" rows="15"></textarea>
+            </fieldset>
+            <fieldset>
+                <button type="button" command="close" commandfor="dlgglobals">OK</button>
+            </fieldset>
+        </dialog>
     </form>
 </body>
 

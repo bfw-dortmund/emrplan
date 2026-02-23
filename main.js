@@ -1,9 +1,14 @@
 const durations = {
-    walk: 45,
-    health: 90,
+    global: 60,
     checkup: 90,
     report: 30,
     test: 90
+}
+
+const title = {
+    checkup: 'Arzt/Ärztin',
+    report: 'Psychologe/in',
+    test: 'Psychologe/in',
 }
 
 const main = async (event) => {
@@ -83,7 +88,8 @@ const main = async (event) => {
     }
 
     const render = () => {
-        var tx;
+        data.elements[`monday`].forEach(elem => elem.value = '')
+        data.elements[`tuesday`].forEach(elem => elem.value = '')
 
         berta.read('appointments').then(tx => {
             tx.appointments.queryAnd(
@@ -122,17 +128,16 @@ const main = async (event) => {
                                 }
                             }
 
-                            const text = `${gett(item.start)} ${item.task}\n`;
+                            const text = `${gett(item.start)} ${item?.title || title[item.task]}\n`;
 
                             switch (true) {
                                 case (0 <= item.start && item.start < 1440):
-                                    data.elements[`monday${user}`].value += text;
+                                    data.elements[`monday`][user].value += text;
                                     break;
                                 case (1440 <= item.start && item.start < 2880):
-                                    data.elements[`tuesday${user}`].value += text;
+                                    data.elements[`tuesday`][user].value += text;
                                     break;
                             }
-                            //console.log(user, gett(item.start), item.task)
                         });
                     })
                 }
@@ -184,18 +189,9 @@ const main = async (event) => {
         });
     });
 
-    timelist.addEventListener('beforetoggle', (event) => {
-        console.dir(event)
+    timetable.addEventListener('beforetoggle', (event) => {
+        render();
     });
-
-    timelist.addEventListener('toggle', (event) => {
-        console.dir(event)
-    });
-
-
-
-    const from = {}
-    const to = {}
 
     // STAFF
     data.elements.staff.id = 'settings-selected-staff';
@@ -337,8 +333,82 @@ const main = async (event) => {
         });
     });
 
+    const reg = new RegExp(/^(?<start>(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9])\s(?<title>.+)/);
+
+    dlgglobals.addEventListener('beforetoggle', (event) => {
+
+        switch (event.newState) {
+            case 'closed':
+                let lines = data.elements.globals.value.split(/\n/).filter(x => x.length);
+
+                if (data.elements.globals.validity.valid) {
+                    berta.write('appointments').then(tx => {
+                        tx.appointments.deleteAnd('task', dberta.eq('global'))
+                            .then(() => {
+                                for (let n = 0; n < lines.length; n++) {
+
+                                    if ((m = reg.exec(lines[n])) !== null) {
+                                        tx.appointments.add({
+                                            id: 'appointment-global' + n,
+                                            task: 'global',
+                                            start: getn(m.groups.start),
+                                            title: m.groups.title,
+                                            active: 1,
+                                            user: -1
+                                        });
+                                    } else {
+                                        console.error('no match');
+                                    }
+                                }
+                            });
+                    }).catch(err => {
+                        console.error(err.message)
+                    });
+                }
+                break;
+
+            case 'open':
+                data.elements.globals.value = '';
+
+                berta.read('appointments').then(tx => {
+                    return tx.appointments.where('task', dberta.eq('global'))
+                        .then(arr => {
+                            arr.forEach(entry=>{
+                                data.elements.globals.value += `${gett(entry.start)} ${entry.title}\n`
+                            })
+                        })
+                }).catch(err => {
+                    console.error(err.message)
+                });
+                break;
+        }
+    });
+
+    data.elements.globals.addEventListener('input', (event) => {
+
+        event.target.setCustomValidity('');
+
+        let lines = event.target.value.split(/\n/).filter(x => x.length);
+
+        for (let n = 0; n < lines.length; n++) {
+            let tmp = lines.shift();
+
+            if (tmp.length < 3) {
+                tmp = tmp.toUpperCase();
+            }
+
+            if (!reg.test(tmp)) {
+
+                event.target.setCustomValidity('format');
+            }
+            
+            lines.push(tmp);
+        }
+
+        event.target.value = lines.join('\n');
+    });
+
     validate();
-    render();
 }
 
 addEventListener('load', main);
