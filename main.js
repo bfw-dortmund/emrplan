@@ -88,19 +88,34 @@ const main = async (event) => {
     }
 
     const render = () => {
-        data.elements[`monday`].forEach(elem => elem.value = '')
-        data.elements[`tuesday`].forEach(elem => elem.value = '')
+        const week = new Date(data.elements.week.valueAsNumber);
+        const instant = week.toTemporalInstant();
+        const zdt = instant.toZonedDateTimeISO("UTC");
+        const date = zdt.toPlainDate();
+        //console.log(week)
+        data.elements.monday.forEach(elem => elem.value = '');
+        data.elements.mondate.forEach(elem => elem.value = dateOrHoliday(date));
+
+        data.elements.tuesday.forEach(elem => elem.value = '');
+        data.elements.tuesdate.forEach(elem => elem.value = dateOrHoliday(date.add({days:1})));
 
         berta.read('appointments').then(tx => {
+
+            // 1st collect global appointments
             tx.appointments.queryAnd(
                 'active', dberta.eq(1),
                 'user', dberta.lt(0)
             ).then(arr1 => {
-                for (const user of [...Array(3).keys()]) {
+                // total number off active user
+                const count = parseInt(data.elements.participants.value) + 1;
+
+                // 2nd collect appointments by user
+                for (const user of [...Array(count).keys()]) {
                     tx.appointments.queryAnd(
                         'active', dberta.eq(1),
                         'user', dberta.eq(user)
                     ).then(arr2 => {
+                        // 3rd merge global and user appointments
                         const arr = arr1.concat(arr2);
                         arr.sort((a, b) => (a.start - b.start));
 
@@ -128,7 +143,7 @@ const main = async (event) => {
                                 }
                             }
 
-                            const text = `${gett(item.start)} ${item?.title || title[item.task]}\n`;
+                            const text = `${gett(item.start).substring(3)} ${item?.title || title[item.task]}\n`;
 
                             switch (true) {
                                 case (0 <= item.start && item.start < 1440):
@@ -139,11 +154,57 @@ const main = async (event) => {
                                     break;
                             }
                         });
-                    })
+
+
+                    });
                 }
             })
         });
     }
+
+    // USERNAME
+    data.elements.username.forEach((elem, i) => {
+
+        function update(id) {
+            document.querySelectorAll(`[for=${id}]`).forEach(output => {
+                output.value = elem.value;
+            });
+
+        }
+
+        elem.addEventListener('change', (event) => {
+            // prevent empty cells
+            elem.value = elem?.value || elem.defaultValue;
+
+            berta.write('settings').then(tx => {
+
+                if (elem.value !== elem.defaultValue) {
+                    tx.settings.put({
+                        id: elem.id,
+                        value: elem.value
+                    });
+                } else {
+                    tx.settings.delete(elem.id);
+                }
+            }).then(() => {
+                update(elem.id);
+            }).catch(err => {
+                console.error(err.message);
+            });
+        });
+
+        // load data
+        berta.read('settings').then(tx => {
+            return tx.settings.get(elem.id);
+        }).then(data => {
+            if (data) {
+                elem.value = data.value;
+                update(elem.id);
+            }
+        }).catch(err => {
+            console.error(err.message)
+        });
+    });
 
     // STAFFNAME
     data.elements.staffname.forEach((elem) => {
@@ -189,9 +250,9 @@ const main = async (event) => {
         });
     });
 
-    timetable.addEventListener('beforetoggle', (event) => {
-        render();
-    });
+    // timetable.addEventListener('beforetoggle', (event) => {
+    //     render();
+    // });
 
     // STAFF
     data.elements.staff.id = 'settings-selected-staff';
@@ -373,7 +434,7 @@ const main = async (event) => {
                 berta.read('appointments').then(tx => {
                     return tx.appointments.where('task', dberta.eq('global'))
                         .then(arr => {
-                            arr.forEach(entry=>{
+                            arr.forEach(entry => {
                                 data.elements.globals.value += `${gett(entry.start)} ${entry.title}\n`
                             })
                         })
@@ -401,7 +462,7 @@ const main = async (event) => {
 
                 event.target.setCustomValidity('format');
             }
-            
+
             lines.push(tmp);
         }
 
@@ -409,6 +470,7 @@ const main = async (event) => {
     });
 
     validate();
+    addEventListener("beforeprint", (event) => { render() });
 }
 
 addEventListener('load', main);

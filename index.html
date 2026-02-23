@@ -31,22 +31,22 @@
             }
         }
 
-        @page a4 {
-            size: a4 portrait;
-        }
 
         @media print {
-            /*             table, footer, nav {
-                display: none;
-            } */
 
-            article {
-                /*                 page: a4;
-                break-after: page; */
+            body>form>header,
+            thead,
+            tfoot,
+            table,
+            footer,
+            nav {
+                display: none;
             }
         }
     </style>
 
+    <link href="header.css" rel="stylesheet">
+    <link href="article.css" rel="stylesheet">
     <link href="table.css" rel="stylesheet">
 
     <script src="dberta.js"></script>
@@ -58,24 +58,52 @@
 
     <form id="data" spellcheck="false" autocomplete="off" onsubmit="return false">
         <header>
-            <select name="staff" multiple="true" size="1">
-                <option value="physician1" selected>1</option>
-                <option value="physician2" selected>2</option>
-                <option value="physician3" selected>3</option>
-                <option value="psychologist1" selected>4</option>
-                <option value="psychologist2" selected>5</option>
-                <option value="psychologist3" selected>6</option>
-                <option value="psychologist4">7</option>
-            </select>
+            <menu>
+                <li>
+                    <button type="button" popovertarget="preview" popovertargetaction="show">Datei</button>
+                    <button type="button">Start</button>
+                </li>
+            </menu>
+            <div>
 
-            <select name="participants">
-                <option value="0" selected>1 Teilnehmer</option>
-                <option value="1" selected>2 Teilnehmer</option>
-                <option value="2" selected>3 Teilnehmer</option>
-            </select>
+                <fieldset>
+                    <legend>Kalender</legend>
+                    <input name="week" type="week" value="2026-W07" onchange="document.title = new Date(data.elements.week.valueAsNumber).toLocaleDateString();">
+                </fieldset>
+
+                <fieldset>
+                    <legend>Mitarbeiter</legend>
+                    <select name="staff" multiple="true" size="1">
+                        <option value="physician1" selected>1</option>
+                        <option value="physician2" selected>2</option>
+                        <option value="physician3" selected>3</option>
+                        <option value="psychologist1" selected>4</option>
+                        <option value="psychologist2" selected>5</option>
+                        <option value="psychologist3" selected>6</option>
+                        <option value="psychologist4">7</option>
+                    </select>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Teilnehmer</legend>
+                    <select name="participants">
+                        <option value="0" selected>1 Teilnehmer</option>
+                        <option value="1" selected>2 Teilnehmer</option>
+                        <option value="2" selected>3 Teilnehmer</option>
+                    </select>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Zeiten</legend>
+<button type="button" command="show-modal" commandfor="dlgglobals">Globals</button> 
+                </fieldset>
+            </div>
+            <!--             
+
+
 
             <button type="button" command="show-modal" commandfor="timetable">timetable</button>
-            <button type="button" command="show-modal" commandfor="dlgglobals">Globals</button>
+            -->
         </header>
         <table>
             <col>
@@ -108,12 +136,9 @@
                     <th>Befund</th>
                 </tr>
             </thead>
-            <div id="timelist" popover>
-                abc
-            </div>
             <tbody>
                 <tr>
-                    <td><input name="username" onchange="this.setAttribute('value', event.target.value)"></td>
+                    <td><input name="username" id="settings-username-0" value="Teilnehmer 1"></td>
                     <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="0"></td>
                     <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="0"></td>
                     <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="0"></td>
@@ -127,7 +152,7 @@
                     <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="0"></td>
                 </tr>
                 <tr>
-                    <td><input name="username"></td>
+                    <td><input name="username" id="settings-username-1" value="Teilnehmer 2"></td>
                     <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="1"></td>
                     <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="1"></td>
                     <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="1"></td>
@@ -141,7 +166,7 @@
                     <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="1"></td>
                 </tr>
                 <tr>
-                    <td><input name="username"></td>
+                    <td><input name="username" id="settings-username-2" value="Teilnehmer 3"></td>
                     <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="2"></td>
                     <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="2"></td>
                     <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="2"></td>
@@ -155,97 +180,48 @@
                     <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="2"></td>
                 </tr>
             </tbody>
-            <tfoot>
-                <tr><input type="reset" value="reset"></tr>
-            </tfoot>
         </table>
-        <dialog id="timetable">
-            <style>
-                @scope {
-                    :scope {
-                        border: none;
-                        width: 100vw;
-                        max-width: 100vw;
-                        height: 100vh;
-                        max-height: 100vh;
-                        overflow: hidden;
-
-                        &:open {
-                            display: flex;
-                        }
-                    }
-
-                    article {
-                        width: 210mm;
-                        height: 297mm;
-                        background-color: white;
-                        margin: auto;
-                        flex: 1;
-                    }
-
-                    @media print {
-                        /*             table, footer, nav {
-                display: none;
-            } */
-
-                        article {
-                            page: a4;
-                            break-after: page;
-                        }
-                    }
-
-                    main {
-                        display: grid;
-                        flex-flow: column;
-                        gap: 16px;
-                        flex: 1;
-                        overflow: scroll;
-                        background-color: lightgray;
-                    }
-
-                    nav {
-                        width: 200px;
-                        background-color: red;
-                    }
-
-                    output {
-                        white-space: pre;
-                    }
-                }
-            </style>
-            <nav>
-                <button type="button" command="close" commandfor="timetable">schließen</button>
-            </nav>
-            <main>
-                <article>
-                    <header>
-                        <h2>Termine für 0</h2>
-                    </header>
-                    <h3>Montag</h3>
-                    <output name="monday"></output>
-                    <h3>dienstag</h3>
-                    <output name="tuesday"></output>
-                </article>
-                <article>
-                    <header>
-                        <h2>Termine für 1</h2>
-                    </header>
-                    <h3>Montag</h3>
-                    <output name="monday"></output>
-                    <h3>dienstag</h3>
-                    <output name="tuesday"></output>
-                </article>
-                <article>
-                    <header>
-                        <h2>Termine für 2</h2>
-                    </header>
-                    <h3>Montag</h3>
-                    <output name="monday"></output>
-                    <h3>dienstag</h3>
-                    <output name="tuesday" contenteditable="true"></output>
-                </article>
-            </main>
-        </dialog>
+        <main id="preview">
+            <article>
+                <header>
+                    <h2>Termine für <output for="settings-username-0">Teilnehmer 1</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="settings-username-1">Teilnehmer 2</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="settings-username-2">Teilnehmer 3</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+        </main>
         <dialog id="dlgglobals">
             <fieldset>
                 <legend>Globals</legend>

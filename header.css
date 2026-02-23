@@ -1,0 +1,57 @@
+@scope (form>header) {
+    :scope {
+        background-color: #efefef;
+        height: 164px;
+        font-size: 12px;
+    }
+
+    div {
+        display: flex;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 8px;
+        height: 108px;
+        margin: 0 8px;
+    }
+
+    fieldset {
+        position: relative;
+        display: inline-flex;
+        align-items: end;
+        border: none;
+        padding: 8px 8px 16px 8px;
+        margin: 0;
+        min-width: 64px;
+        height: 100%;
+
+        &:nth-of-type(n+2) {
+            border-left: 1px solid #d1d1d1;
+        }
+    }
+
+    input[type=week] {
+        border: 1px solid black;
+        border-radius: 5px;
+        padding: 2.5px 3px 2.5px 4px;
+        font-size: inherit;
+        font-family: inherit;
+    }
+
+    legend {
+        position: absolute;
+        inset: auto 0 -4px 0;
+        text-align: center;
+    }
+
+    menu {
+        display: flex;
+        padding: 0 16px;
+        height: 32px;
+        list-style-type: none;
+        align-items: center;
+
+        & button {
+            border: none;
+        }
+    }
+}

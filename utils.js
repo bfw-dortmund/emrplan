@@ -21,9 +21,9 @@ function dateOfEaster(tpd) {
 
 function dateOrHoliday(tpd) {
     const options = {
-        weekday: "short",
+       // weekday: "long",
         year: "numeric",
-        month: "long",
+        month: "numeric",
         day: "numeric"
     }
     const easter = dateOfEaster(tpd);

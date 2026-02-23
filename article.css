@@ -1,0 +1,48 @@
+@page a4 {
+    size: a4 portrait;
+}
+
+@scope (main) {
+
+    :scope {
+        background-color: #efefef;
+        display: none;
+    }
+
+    @media print {
+        :scope {
+            display: block;
+        }
+    }
+
+    article {
+        page: a4;
+        break-after: page;
+        width: 210mm;
+        height: 297mm;
+        background-color: white;
+        margin: auto;
+    }
+
+    /* ARTICLES VISIBILITY */
+    article:nth-of-type(n+2) {
+        display: none;
+    }
+
+    tarticler:is(form:has([name="participants"] :nth-of-type(1):checked) :nth-last-of-type(n+3)) {
+        display: block;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(2):checked) :nth-last-of-type(n+2)) {
+        display: block;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(3):checked) :nth-last-of-type(n+1)) {
+        display: block;
+    }
+
+    output {
+        white-space: pre;
+        line-height: 1.5;
+    }
+}
