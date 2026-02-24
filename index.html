@@ -52,15 +52,28 @@
     <script src="dberta.js"></script>
     <script src="utils.js"></script>
     <script src="main.js"></script>
+
+    <script id="template-initial" type="application/json">
+        {
+            appointments: [
+                {
+                    title: "Empfang und Begrüßung",
+                    id: "appointment-global-0",
+                    task: global,
+                    start: 600,
+                    active: 1
+                }
+            ]
+        }
+    </script>
 </head>
 
 <body>
-
     <form id="data" spellcheck="false" autocomplete="off" onsubmit="return false">
         <header>
             <menu>
                 <li>
-                    <button type="button" popovertarget="preview" popovertargetaction="show">Datei</button>
+                    <button type="button" command="show-modal" commandfor="dlgfile">Datei</button>
                     <button type="button">Start</button>
                 </li>
             </menu>
@@ -68,7 +81,8 @@
 
                 <fieldset>
                     <legend>Kalender</legend>
-                    <input name="week" type="week" value="2026-W07" onchange="document.title = new Date(data.elements.week.valueAsNumber).toLocaleDateString();">
+                    <input name="week" type="week" value="2026-W07"
+                        onchange="document.title = new Date(data.elements.week.valueAsNumber).toLocaleDateString();">
                 </fieldset>
 
                 <fieldset>
@@ -87,16 +101,24 @@
                 <fieldset>
                     <legend>Teilnehmer</legend>
                     <select name="participants">
-                        <option value="0" selected>1 Teilnehmer</option>
-                        <option value="1" selected>2 Teilnehmer</option>
-                        <option value="2" selected>3 Teilnehmer</option>
+                        <option value="0">1 Teilnehmer</option>
+                        <option value="1">2 Teilnehmer</option>
+                        <option value="2">3 Teilnehmer</option>
                     </select>
                 </fieldset>
 
-                <fieldset>
+                <fieldset id="predefinedlist">
                     <legend>Zeiten</legend>
-<button type="button" command="show-modal" commandfor="dlgglobals">Globals</button> 
+                    <input name="predefined" type="button" value="MO 13:00" class="row1" disabled>
+                    <input name="predefined" type="button" value="MO 14:30" class="row1" disabled>
+                    <input name="predefined" type="button" value="MO 15:15" class="row1" disabled>
+                    <input name="predefined" type="button" value="DI 09:00" class="row2" disabled>
+                    <input name="predefined" type="button" value="DI 10:30" class="row2" disabled>
+                    <input name="predefined" type="button" value="DI 13:00" class="row2" disabled>
+                    <input name="predefined" type="button" value="DI 14:30" class="row2" disabled>
+                    <input name="predefined" type="button" value="MI 08:00" class="row3" disabled>
                 </fieldset>
+                <button type="button" command="show-modal" commandfor="dlgglobals">Globals</button>
             </div>
             <!--             
 
@@ -222,6 +244,9 @@
                 <output name="tuesday"></output>
             </article>
         </main>
+        <dialog id="dlgfile">
+            dlgfile
+        </dialog>
         <dialog id="dlgglobals">
             <fieldset>
                 <legend>Globals</legend>

@@ -29,6 +29,21 @@
         }
     }
 
+    fieldset:last-of-type {
+        display: grid;
+        grid-template-columns: repeat(5, fr);
+
+        & .row1 {
+            grid-row: 1;
+        }
+        & .row2 {
+            grid-row: 2;
+        }
+        & .row3 {
+            grid-row: 3;
+        }
+    }
+
     input[type=week] {
         border: 1px solid black;
         border-radius: 5px;

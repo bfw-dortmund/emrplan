@@ -97,7 +97,7 @@ const main = async (event) => {
         data.elements.mondate.forEach(elem => elem.value = dateOrHoliday(date));
 
         data.elements.tuesday.forEach(elem => elem.value = '');
-        data.elements.tuesdate.forEach(elem => elem.value = dateOrHoliday(date.add({days:1})));
+        data.elements.tuesdate.forEach(elem => elem.value = dateOrHoliday(date.add({ days: 1 })));
 
         berta.read('appointments').then(tx => {
 
@@ -339,12 +339,50 @@ const main = async (event) => {
             elem.setCustomValidity('');
         });
 
-        // elem.addEventListener('click', (event) => {
-        //     timelist.togglePopover({
-        //         source: event.target,
-        //         force: true
-        //     })
-        // });
+        function onpredefined(event) {
+            event.preventDefault();
+
+            elem.value = event.target.value;
+            elem.dispatchEvent(new Event('input'));
+            elem.dispatchEvent(new Event('change'));
+        }
+
+        elem.addEventListener('focusin', async (event) => {
+            data.elements.predefinedlist.addEventListener('mousedown', onpredefined);
+
+            const tx = await berta.read('appointments');
+            const entries = (
+                await tx.appointments.queryOr(
+                    'user', dberta.eq(parseInt(elem.dataset.user)),
+                    'staff', dberta.eq(elem.dataset.staff)
+                )
+            ).filter(entry => entry.active === 1);
+            
+            data.elements.predefined.forEach(input => {
+                input.disabled = false;
+
+                entries.forEach(entry => {
+                    
+                    const
+                        start1 = getn(input.value),
+                        end1 = start1+ durations[elem.dataset.task],
+                        start2 = entry.start,
+                        end2 = start2 + durations[entry.task];
+
+                    if ((start1 < end2) && (start2 < end1)) {
+                        input.disabled = true;
+                    }
+                });
+            });
+        });
+
+        elem.addEventListener('focusout', (event) => {
+            data.elements.predefinedlist.removeEventListener('mousedown', onpredefined);
+
+            data.elements.predefined.forEach(item => {
+                item.disabled = true;
+            });
+        });
 
         elem.addEventListener('change', (event) => {
 
@@ -378,7 +416,7 @@ const main = async (event) => {
                     });
                     break;
                 default:
-                    console.log('error')
+                    console.log('error', elem.value)
             }
         }); // change
 
@@ -467,6 +505,20 @@ const main = async (event) => {
         }
 
         event.target.value = lines.join('\n');
+    });
+
+    // PREDEFINED
+    // data.elements.predefinedlist.addEventListener('mousedown', (event)=>{
+    //     event.preventDefault();
+    //     console.log(7)
+    // })
+    data.elements.predefined.forEach(elem => {
+        elem.tabIndex = -1
+
+        /*         elem.addEventListener('focus', (event)=>{event.preventDefault(); console.log(8)});
+                elem.addEventListener('focusin', (event)=>{event.preventDefault(); console.log(9)});
+                elem.addEventListener('click', (event)=>{event.preventDefault(); console.log(19)}); */
+        //elem.addEventListener('mousedown', (event)=>{event.preventDefault(); console.log(19)});
     });
 
     validate();
