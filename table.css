@@ -1,9 +1,18 @@
 @scope (table) {
 
     :scope {
+        font-size: 12px;
         border-collapse: collapse;
-        table-layout: fixed;
-        width: 1000px;
+    }
+
+    col {
+        border:1px solid gray;
+        border-width: 0 0 0 1px;
+        width: 80px;
+
+        &:first-of-type, &:last-of-type {
+            /* border: none; */
+        }
     }
 
     col:nth-of-type(n+2) {
@@ -43,26 +52,34 @@
 
     input {
         width: 100%;
-        font-size: 12px;
         text-align: center;
     }
 
     th {
         vertical-align: top;
-        border: 1px solid black;
-        border-width: 0 1px;
+/*         border: 1px solid black;
+        border-width: 0 1px; */
+        padding: 3px 8px;
     }
 }
 
 @scope (tbody) {
 
     input {
-        width: 80px;
+        width: 100%;
         font-size: 12px;
         text-transform: uppercase;
 
         &:invalid {
             outline: 2px solid red
+        }
+    }
+
+    td {
+        padding: 5px;
+
+        &:first-of-type {
+            width: 200px;
         }
     }
 

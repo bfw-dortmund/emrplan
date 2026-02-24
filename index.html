@@ -6,12 +6,25 @@
     <meta charset="utf-8">
 
     <style>
+        @font-face {
+            font-family: 'segoeui';
+            src: url('fonts/segoeuithis-webfont.woff2') format('woff2'),
+                url('fonts/segoeuithis-webfont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         *,
         *::after,
         *::before {
             margin: 0;
             margin-inline: 0;
             box-sizing: border-box;
+        }
+
+        :root {
+            font-family: segoeui;
+            line-height: 1;
         }
 
         select,
@@ -23,13 +36,6 @@
             rotate: 180deg;
         }
 
-        textarea {
-            resize: none;
-
-            &:invalid {
-                outline: 2px solid red
-            }
-        }
 
 
         @media print {
@@ -118,14 +124,35 @@
                     <input name="predefined" type="button" value="DI 14:30" class="row2" disabled>
                     <input name="predefined" type="button" value="MI 08:00" class="row3" disabled>
                 </fieldset>
-                <button type="button" command="show-modal" commandfor="dlgglobals">Globals</button>
+
+                <fieldset>
+                    <legend>Vorlagen</legend>
+                    <select name="templates" style="width: 124px">
+                        <optgroup label="10 Teilnehmer">
+                            <option selected>Standard</option>
+                            <option>Donnerstag Feiertag</option>
+                            <option>Freitag Feiertag</option>
+                        </optgroup>
+
+                        <optgroup label="7 Teilnehmer">
+                            <option>Urlaub Psycholge</option>
+                            <option>Urlaub Arzt</option>
+                        </optgroup>
+
+                        <optgroup label="6 Teilnehmer">
+                            <option>Montag Feiertag</option>
+                            <option>Urlaub Arzt</option>
+                        </optgroup>
+                    </select>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Allgemein</legend>
+                    <textarea name="commontimes" cols="30"></textarea>
+                </fieldset>
+                <!--                 <button type="button" command="show-modal" commandfor="dlgglobals">Globals</button>
+ -->
             </div>
-            <!--             
-
-
-
-            <button type="button" command="show-modal" commandfor="timetable">timetable</button>
-            -->
         </header>
         <table>
             <col>

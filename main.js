@@ -1,5 +1,5 @@
 const durations = {
-    global: 60,
+    common: 60,
     checkup: 90,
     report: 30,
     test: 90
@@ -25,7 +25,7 @@ const main = async (event) => {
 
         [
             {   // Dienstag
-                id: 'appointment-global-1',
+                id: 'appointment-common-1',
                 user: -1,
                 start: 1920,    // DI 08:00
                 title: 'Morgenrunde',
@@ -33,7 +33,7 @@ const main = async (event) => {
                 active: 1
             },
             {
-                id: 'appointment-global-2',
+                id: 'appointment-common-2',
                 user: -1,
                 start: 2070,    // DI 10:30
                 title: 'Gesundheitsförderung1',
@@ -41,7 +41,7 @@ const main = async (event) => {
                 active: 1
             },
             {
-                id: 'appointment-global-3',
+                id: 'appointment-common-3',
                 user: -1,
                 start: 2220,    // DI 13:00
                 title: 'Gesundheitsförderung2',
@@ -101,7 +101,7 @@ const main = async (event) => {
 
         berta.read('appointments').then(tx => {
 
-            // 1st collect global appointments
+            // 1st collect common appointments
             tx.appointments.queryAnd(
                 'active', dberta.eq(1),
                 'user', dberta.lt(0)
@@ -115,7 +115,7 @@ const main = async (event) => {
                         'active', dberta.eq(1),
                         'user', dberta.eq(user)
                     ).then(arr2 => {
-                        // 3rd merge global and user appointments
+                        // 3rd merge common and user appointments
                         const arr = arr1.concat(arr2);
                         arr.sort((a, b) => (a.start - b.start));
 
@@ -357,15 +357,15 @@ const main = async (event) => {
                     'staff', dberta.eq(elem.dataset.staff)
                 )
             ).filter(entry => entry.active === 1);
-            
+
             data.elements.predefined.forEach(input => {
                 input.disabled = false;
 
                 entries.forEach(entry => {
-                    
+
                     const
                         start1 = getn(input.value),
-                        end1 = start1+ durations[elem.dataset.task],
+                        end1 = start1 + durations[elem.dataset.task],
                         start2 = entry.start,
                         end2 = start2 + durations[entry.task];
 
@@ -432,9 +432,9 @@ const main = async (event) => {
         });
     });
 
-    const reg = new RegExp(/^(?<start>(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9])\s(?<title>.+)/);
+    const reg = new RegExp(/^(?<start>(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9])\s(?<title>.+)/, 'm');
 
-    dlgglobals.addEventListener('beforetoggle', (event) => {
+    /* dlgglobals.addEventListener('beforetoggle', (event) => {
 
         switch (event.newState) {
             case 'closed':
@@ -482,12 +482,38 @@ const main = async (event) => {
                 break;
         }
     });
+ */
+    data.elements.commontimes.addEventListener('change', async (event) => {
+        let lines = event.target.value.split(/\n/).filter(x => x.length);
 
-    data.elements.globals.addEventListener('input', (event) => {
+        if (!event.target.value || event.target.validity.valid) {
+            const tx = await berta.write('appointments');
+
+            await tx.appointments.deleteAnd('task', dberta.eq('common'));
+
+            for (const n of lines.keys()) {
+
+                if ((m = reg.exec(lines[n])) !== null) {
+                    await tx.appointments.add({
+                        id: 'appointment-common-' + n,
+                        task: 'common',
+                        start: getn(m.groups.start),
+                        title: m.groups.title,
+                        active: 1,
+                        user: -1
+                    });
+                } else {
+                    console.error('no match');
+                }
+            }
+        }
+    });
+
+    data.elements.commontimes.addEventListener('input', (event) => {
 
         event.target.setCustomValidity('');
 
-        let lines = event.target.value.split(/\n/).filter(x => x.length);
+        let lines = event.target.value.split(/\n/)//.filter(x => x.length);
 
         for (let n = 0; n < lines.length; n++) {
             let tmp = lines.shift();
@@ -507,6 +533,17 @@ const main = async (event) => {
         event.target.value = lines.join('\n');
     });
 
+    // load data
+    const tx = await berta.read('appointments');
+    const arr = await tx.appointments.queryAnd(
+        'active', dberta.eq(1),
+        'user', dberta.lt(0)
+    )
+
+    arr.forEach(item => {
+        data.elements.commontimes.value += `${gett(item.start)} ${item.title}\n`
+    })
+    
     // PREDEFINED
     // data.elements.predefinedlist.addEventListener('mousedown', (event)=>{
     //     event.preventDefault();

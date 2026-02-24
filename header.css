@@ -2,7 +2,7 @@
     :scope {
         background-color: #efefef;
         height: 164px;
-        font-size: 12px;
+        font-size: 14px;
     }
 
     div {
@@ -29,16 +29,18 @@
         }
     }
 
-    fieldset:last-of-type {
+    fieldset#predefinedlist {
         display: grid;
         grid-template-columns: repeat(5, fr);
 
         & .row1 {
             grid-row: 1;
         }
+
         & .row2 {
             grid-row: 2;
         }
+
         & .row3 {
             grid-row: 3;
         }
@@ -47,7 +49,7 @@
     input[type=week] {
         border: 1px solid black;
         border-radius: 5px;
-        padding: 2.5px 3px 2.5px 4px;
+        padding: 0 3px 0 4px;
         font-size: inherit;
         font-family: inherit;
     }
@@ -56,6 +58,7 @@
         position: absolute;
         inset: auto 0 -4px 0;
         text-align: center;
+        font-size: 12px;
     }
 
     menu {
@@ -67,6 +70,24 @@
 
         & button {
             border: none;
+        }
+    }
+
+    select {
+        line-height: 1.35;
+        border-radius: 5px;
+    }
+
+    textarea {
+        resize: none;
+        height: 100%;
+        font-family: inherit;
+        line-height: 1.25;
+        font-size: inherit;
+        border-radius: 5px;
+
+        &:invalid {
+            outline: 2px solid red
         }
     }
 }
