@@ -20,38 +20,23 @@ const main = async (event) => {
         }
     });
 
-    if (berta.updated) {
-        const tx = await berta.write('appointments');
+    async function loadTemplate(id) {
 
-        [
-            {   // Dienstag
-                id: 'appointment-common-1',
-                user: -1,
-                start: 1920,    // DI 08:00
-                title: 'Morgenrunde',
-                task: 'walk',
-                active: 1
-            },
-            {
-                id: 'appointment-common-2',
-                user: -1,
-                start: 2070,    // DI 10:30
-                title: 'Gesundheitsförderung1',
-                task: 'health',
-                active: 1
-            },
-            {
-                id: 'appointment-common-3',
-                user: -1,
-                start: 2220,    // DI 13:00
-                title: 'Gesundheitsförderung2',
-                task: 'health',
-                active: 1
-            }
-        ].forEach((item, i) => {
-            tx.appointments.put(item)
-                .catch(err => console.error(err));
-        })
+        const tx = await berta.write('appointments', 'settings');
+
+        await tx.appointments.clear();
+        await tx.settings.clear();
+
+        const script = document.scripts.namedItem(id);
+        const obj = JSON.parse(script.textContent);
+
+        for (const item of obj.appointments) {
+            await tx.appointments.add(item);
+        }
+
+        for (const item of obj.settings) {
+            await tx.settings.add(item);
+        }
     }
 
     const validate = () => {
@@ -162,6 +147,55 @@ const main = async (event) => {
         });
     }
 
+    async function refresh(id) {
+        const tx = await berta.write('appointments', 'settings');
+
+        const settings = await tx.settings.getAll(id);
+
+        for (const item of settings) {
+
+            switch (true) {
+                case Object.hasOwn(item, 'values'):
+                    Array.from(data.elements[item.id]).forEach(option => {
+                        option.selected = item.values.includes(option.value);
+                    });
+                    break;
+
+                case Object.hasOwn(item, 'value'):
+                    data.elements[item.id].value = item.value;
+                    break;
+
+                case Object.hasOwn(item, 'valueAsNumber'):
+                    data.elements[item.id].valueAsNumber = item.valueAsNumber;
+                    break;
+
+                default:
+                    console.error('error', item)
+            }
+        }
+
+        const appointments = await tx.appointments.getAll(id);
+
+        for (const item of appointments) {
+            switch (true) {
+                case (item.user === -1):
+                    break;
+
+                case (item.active === 1):
+                    data.elements[item.id].value = gett(item.start);
+                    break;
+
+                case (item.active === 0):
+                    // do nothing
+                    break;
+
+                default:
+                    console.error('error');
+            }
+
+        }
+    }
+
     // USERNAME
     data.elements.username.forEach((elem, i) => {
 
@@ -250,83 +284,50 @@ const main = async (event) => {
         });
     });
 
-    // timetable.addEventListener('beforetoggle', (event) => {
-    //     render();
-    // });
-
     // STAFF
-    data.elements.staff.id = 'settings-selected-staff';
-    data.elements.staff.addEventListener('change', (event) => {
+    data.elements.staff.addEventListener('change', async (event) => {
         const user = parseInt(data.elements.participants.value);
-        const options = Array.from(event.target, a => [a.value, a.selected]);
+        const options = Array.from(event.target);
+        const values = options.filter(a => a.selected).map(a => a.value);
 
-        berta.write('settings', 'appointments').then(tx => {
-            const value = Object.fromEntries(options);
-            value.id = data.elements.staff.id;
+        const tx = await berta.write('settings', 'appointments');
 
-            tx.settings.put(value).then(() => {
-                options.forEach(option => {
-
-                    const [value, selected] = option;
-
-                    tx.appointments.updateAnd('user', dberta.between(0, user), 'staff', value, {
-                        active: selected * 1
-                    }).catch(err => {
-                        console.error(err.message);
-                    });
-                });
-            }).then(() => {
-                validate();
-            })
-        }).catch(err => {
-            console.error(err.message);
+        await tx.settings.put({
+            id: event.target.id,
+            values: values
         });
-    });
 
-    // load data
-    berta.read('settings').then(tx => {
-        tx.settings.get(data.elements.staff.id).then(obj => {
-            Array.from(data.elements.staff).forEach(option => {
-                option.selected = obj[option.value];
-            });
-        })
-    }).catch(err => {
-        console.error(err.message);
+        for (const option of options) {
+
+            await tx.appointments.updateAnd(
+                'user', dberta.between(0, user),
+                'staff', option.value, { active: option.selected * 1 }
+            )
+        }
+
+        refresh();
     });
 
     // PARTICIPANTS
-    data.elements.participants.id = 'settings-selected-participants';
-    data.elements.participants.addEventListener('change', (event) => {
+    data.elements.participants.addEventListener('change', async (event) => {
 
         const user = parseInt(event.target.value);
+        const tx = await berta.write('settings', 'appointments');
 
-        berta.write('settings', 'appointments').then(tx => {
-
-            tx.settings.put({
-                id: event.target.id,
-                value: user
-            }).then(() => {
-                tx.appointments.updateAnd('user', dberta.between(0, user), {
-                    active: 1
-                });
-
-            }).then(() => {
-                tx.appointments.updateAnd('user', dberta.between(user + 1, 10), {
-                    active: 0
-                });
-
-            }).then(() => { data.elements.staff.dispatchEvent(new Event('change')) });
-        }).catch(err => {
-            console.error(err.message);
+        await tx.settings.put({
+            id: event.target.id,
+            value: user
         });
-    });
 
-    // load data
-    berta.read('settings').then(tx => {
-        tx.settings.get(data.elements.participants.id).then((obj) => {
-            data.elements.participants.value = obj.value;
-        })
+        await tx.appointments.updateAnd('user', dberta.between(0, user), {
+            active: 1
+        });
 
+        await tx.appointments.updateAnd('user', dberta.between(user + 1, 10), {
+            active: 0
+        });
+
+        data.elements.staff.dispatchEvent(new Event('change'));
     });
 
     // APPOINTMENT
@@ -421,68 +422,19 @@ const main = async (event) => {
         }); // change
 
         // load data
-        berta.read('appointments').then(tx => {
-            return tx.appointments.get(elem.id);
-        }).then(data => {
-            if (data) {
-                elem.value = gett(data.start)
-            }
-        }).catch(err => {
-            console.error(err.message)
-        });
+        // berta.read('appointments').then(tx => {
+        //     return tx.appointments.get(elem.id);
+        // }).then(data => {
+        //     if (data) {
+        //         elem.value = gett(data.start)
+        //     }
+        // }).catch(err => {
+        //     console.error(err.message)
+        // });
     });
 
     const reg = new RegExp(/^(?<start>(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9])\s(?<title>.+)/, 'm');
 
-    /* dlgglobals.addEventListener('beforetoggle', (event) => {
-
-        switch (event.newState) {
-            case 'closed':
-                let lines = data.elements.globals.value.split(/\n/).filter(x => x.length);
-
-                if (data.elements.globals.validity.valid) {
-                    berta.write('appointments').then(tx => {
-                        tx.appointments.deleteAnd('task', dberta.eq('global'))
-                            .then(() => {
-                                for (let n = 0; n < lines.length; n++) {
-
-                                    if ((m = reg.exec(lines[n])) !== null) {
-                                        tx.appointments.add({
-                                            id: 'appointment-global' + n,
-                                            task: 'global',
-                                            start: getn(m.groups.start),
-                                            title: m.groups.title,
-                                            active: 1,
-                                            user: -1
-                                        });
-                                    } else {
-                                        console.error('no match');
-                                    }
-                                }
-                            });
-                    }).catch(err => {
-                        console.error(err.message)
-                    });
-                }
-                break;
-
-            case 'open':
-                data.elements.globals.value = '';
-
-                berta.read('appointments').then(tx => {
-                    return tx.appointments.where('task', dberta.eq('global'))
-                        .then(arr => {
-                            arr.forEach(entry => {
-                                data.elements.globals.value += `${gett(entry.start)} ${entry.title}\n`
-                            })
-                        })
-                }).catch(err => {
-                    console.error(err.message)
-                });
-                break;
-        }
-    });
- */
     data.elements.commontimes.addEventListener('change', async (event) => {
         let lines = event.target.value.split(/\n/).filter(x => x.length);
 
@@ -543,23 +495,60 @@ const main = async (event) => {
     arr.forEach(item => {
         data.elements.commontimes.value += `${gett(item.start)} ${item.title}\n`
     })
-    
-    // PREDEFINED
-    // data.elements.predefinedlist.addEventListener('mousedown', (event)=>{
-    //     event.preventDefault();
-    //     console.log(7)
-    // })
-    data.elements.predefined.forEach(elem => {
-        elem.tabIndex = -1
 
-        /*         elem.addEventListener('focus', (event)=>{event.preventDefault(); console.log(8)});
-                elem.addEventListener('focusin', (event)=>{event.preventDefault(); console.log(9)});
-                elem.addEventListener('click', (event)=>{event.preventDefault(); console.log(19)}); */
-        //elem.addEventListener('mousedown', (event)=>{event.preventDefault(); console.log(19)});
+    // PREDEFINED
+    data.elements.predefined.forEach(elem => {
+        elem.tabIndex = -1;
     });
 
-    validate();
+
+    // TEMPLATES
+    data.elements.templates.addEventListener('change', async (event) => {
+        promptTemplateChange.showModal();
+    })
+
+    promptTemplateChange.addEventListener('close', async (event) => {
+
+        const tx = await berta.write('appointments', 'settings');
+
+        switch (event.target.returnValue) {
+            case 'confirm':
+                loadTemplate(data.elements.templates.value);
+                refresh();
+                break;
+
+            case 'cancel':
+                refresh(data.elements.templates.id);
+                break;
+
+            default:
+                console.error('error')
+        }
+    });
+
+    // WEEK
+    data.elements.week.addEventListener('change', async (event) => {
+        const tx = await berta.write('settings');
+
+        await tx.settings.put({
+            id: event.target.id,
+            valueAsNumber: event.target.valueAsNumber
+        });
+    });
+    
+
+    // first run
+    if (berta.updated) {
+        loadTemplate('template-10-default');
+
+        data.elements.week.valueAsNumber = Date.now();
+        data.elements.week.dispatchEvent(new Event('change'));
+    }
+
     addEventListener("beforeprint", (event) => { render() });
+    
+    refresh();
+    validate();
 }
 
 addEventListener('load', main);

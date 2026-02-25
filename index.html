@@ -23,6 +23,7 @@
         }
 
         :root {
+            width: 1200px;
             font-family: segoeui;
             line-height: 1;
         }
@@ -59,15 +60,68 @@
     <script src="utils.js"></script>
     <script src="main.js"></script>
 
-    <script id="template-initial" type="application/json">
+    <script id="template-10-default" type="application/json">
         {
-            appointments: [
+            "appointments": [
                 {
-                    title: "Empfang und Begrüßung",
-                    id: "appointment-global-0",
-                    task: global,
-                    start: 600,
-                    active: 1
+                    "id": "appointment-common-0",
+                    "title": "Empfang und Begrüßung",
+                    "task": "common",
+                    "start": 600,
+                    "active": 1,
+                    "user": -1
+                }
+            ],
+            "settings": [
+                {
+                    "id": "setting-select-template",
+                    "value": "template-10-default"
+                },
+                {
+                    "id": "setting-select-participants",
+                    "value": 2
+                },
+                {
+                    "id": "setting-select-staff",
+                    "values": [
+                        "physician1",
+                        "physician2",
+                        "physician3",
+                        "psychologist1",
+                        "psychologist2",
+                        "psychologist3"
+                    ] 
+                }
+            ]
+        }   
+    </script>
+
+    <script id="template-10-thursday" type="application/json">
+        {
+            "appointments": [],
+            "settings": []
+        }   
+    </script>
+    <script id="template-10-friday" type="application/json">
+        {
+            "appointments": [
+                {
+                    "id": "appointment-common-0",
+                    "title": "Empfang und Begrüßung",
+                    "task": "common",
+                    "start": 600,
+                    "active": 1,
+                    "user": -1
+                }
+            ],
+            "settings": [
+                {
+                    "id": "setting-select-template",
+                    "value": "template-10-friday"
+                },
+                {
+                    "id": "setting-select-participants",
+                    "value": 2
                 }
             ]
         }
@@ -87,26 +141,26 @@
 
                 <fieldset>
                     <legend>Kalender</legend>
-                    <input name="week" type="week" value="2026-W07"
+                    <input id="setting-input-week" name="week" type="week" value="2026-W07"
                         onchange="document.title = new Date(data.elements.week.valueAsNumber).toLocaleDateString();">
                 </fieldset>
 
                 <fieldset>
                     <legend>Mitarbeiter</legend>
-                    <select name="staff" multiple="true" size="1">
-                        <option value="physician1" selected>1</option>
-                        <option value="physician2" selected>2</option>
-                        <option value="physician3" selected>3</option>
-                        <option value="psychologist1" selected>4</option>
-                        <option value="psychologist2" selected>5</option>
-                        <option value="psychologist3" selected>6</option>
+                    <select id="setting-select-staff" name="staff" multiple="true" size="1">
+                        <option value="physician1">1</option>
+                        <option value="physician2">2</option>
+                        <option value="physician3">3</option>
+                        <option value="psychologist1">4</option>
+                        <option value="psychologist2">5</option>
+                        <option value="psychologist3">6</option>
                         <option value="psychologist4">7</option>
                     </select>
                 </fieldset>
 
                 <fieldset>
                     <legend>Teilnehmer</legend>
-                    <select name="participants">
+                    <select id="setting-select-participants" name="participants">
                         <option value="0">1 Teilnehmer</option>
                         <option value="1">2 Teilnehmer</option>
                         <option value="2">3 Teilnehmer</option>
@@ -127,11 +181,11 @@
 
                 <fieldset>
                     <legend>Vorlagen</legend>
-                    <select name="templates" style="width: 124px">
+                    <select id="setting-select-template" name="templates">
                         <optgroup label="10 Teilnehmer">
-                            <option selected>Standard</option>
-                            <option>Donnerstag Feiertag</option>
-                            <option>Freitag Feiertag</option>
+                            <option value="template-10-default" selected>Standard</option>
+                            <option value="template-10-thursday">Donnerstag Feiertag</option>
+                            <option value="template-10-friday">Freitag Feiertag</option>
                         </optgroup>
 
                         <optgroup label="7 Teilnehmer">
@@ -150,8 +204,6 @@
                     <legend>Allgemein</legend>
                     <textarea name="commontimes" cols="30"></textarea>
                 </fieldset>
-                <!--                 <button type="button" command="show-modal" commandfor="dlgglobals">Globals</button>
- -->
             </div>
         </header>
         <table>
@@ -274,16 +326,15 @@
         <dialog id="dlgfile">
             dlgfile
         </dialog>
-        <dialog id="dlgglobals">
-            <fieldset>
-                <legend>Globals</legend>
-                <textarea name="globals" cols="50" rows="15"></textarea>
-            </fieldset>
-            <fieldset>
-                <button type="button" command="close" commandfor="dlgglobals">OK</button>
-            </fieldset>
-        </dialog>
     </form>
+    <dialog id="promptTemplateChange">
+        <fieldset>
+            <legend>Vorlage anwenden?</legend>
+            <output for="select-template"></output>
+            <button type="button" command="close" commandfor="promptTemplateChange" value="confirm">OK</button>
+            <button type="button" command="close" commandfor="promptTemplateChange" value="cancel">Abbruch</button>
+        </fieldset>
+    </dialog>
 </body>
 
 </html>
