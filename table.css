@@ -6,11 +6,12 @@
     }
 
     col {
-        border:1px solid gray;
+        border: 1px solid gray;
         border-width: 0 0 0 1px;
         width: 80px;
 
-        &:first-of-type, &:last-of-type {
+        &:first-of-type,
+        &:last-of-type {
             /* border: none; */
         }
     }
@@ -57,7 +58,7 @@
 
     th {
         vertical-align: top;
-/*         border: 1px solid black;
+        /*         border: 1px solid black;
         border-width: 0 1px; */
         padding: 3px 8px;
     }
@@ -68,7 +69,7 @@
     input {
         width: 100%;
         font-size: 12px;
-        text-transform: uppercase;
+        text-transform: inherit;
 
         &:invalid {
             outline: 2px solid red
@@ -77,8 +78,10 @@
 
     td {
         padding: 5px;
+        text-transform: uppercase;
 
         &:first-of-type {
+            text-transform: capitalize;
             width: 200px;
         }
     }
@@ -88,15 +91,43 @@
         visibility: collapse;
     }
 
-    tr:is(form:has([name="participants"] :nth-of-type(1):checked) :nth-last-of-type(n+3)) {
+    tr:is(form:has([name="participants"] :nth-of-type(1):checked) :nth-last-of-type(n+10)) {
         visibility: visible;
     }
 
-    tr:is(form:has([name="participants"] :nth-of-type(2):checked) :nth-last-of-type(n+2)) {
+    tr:is(form:has([name="participants"] :nth-of-type(2):checked) :nth-last-of-type(n+9)) {
         visibility: visible;
     }
 
-    tr:is(form:has([name="participants"] :nth-of-type(3):checked) :nth-last-of-type(n+1)) {
+    tr:is(form:has([name="participants"] :nth-of-type(3):checked) :nth-last-of-type(n+8)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([name="participants"] :nth-of-type(4):checked) :nth-last-of-type(n+7)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([name="participants"] :nth-of-type(5):checked) :nth-last-of-type(n+6)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([name="participants"] :nth-of-type(6):checked) :nth-last-of-type(n+5)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([name="participants"] :nth-of-type(7):checked) :nth-last-of-type(n+4)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([name="participants"] :nth-of-type(8):checked) :nth-last-of-type(n+3)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([name="participants"] :nth-of-type(9):checked) :nth-last-of-type(n+2)) {
+        visibility: visible;
+    }
+
+    tr:is(form:has([name="participants"] :nth-of-type(10):checked) :nth-last-of-type(n+1)) {
         visibility: visible;
     }
 }

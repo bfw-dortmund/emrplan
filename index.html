@@ -79,7 +79,7 @@
                 },
                 {
                     "id": "setting-select-participants",
-                    "value": 2
+                    "value": 9
                 },
                 {
                     "id": "setting-select-staff",
@@ -137,8 +137,8 @@
                     <button type="button">Start</button>
                 </li>
             </menu>
-            <div>
 
+            <div>
                 <fieldset>
                     <legend>Kalender</legend>
                     <input id="setting-input-week" name="week" type="week" value="2026-W07"
@@ -147,7 +147,7 @@
 
                 <fieldset>
                     <legend>Mitarbeiter</legend>
-                    <select id="setting-select-staff" name="staff" multiple="true" size="1">
+                    <select id="setting-select-staff" name="staff" multiple="multiple" size="1">
                         <option value="physician1">1</option>
                         <option value="physician2">2</option>
                         <option value="physician3">3</option>
@@ -164,19 +164,26 @@
                         <option value="0">1 Teilnehmer</option>
                         <option value="1">2 Teilnehmer</option>
                         <option value="2">3 Teilnehmer</option>
+                        <option value="3">4 Teilnehmer</option>
+                        <option value="4">5 Teilnehmer</option>
+                        <option value="5">6 Teilnehmer</option>
+                        <option value="6">7 Teilnehmer</option>
+                        <option value="7">8 Teilnehmer</option>
+                        <option value="8">9 Teilnehmer</option>
+                        <option value="9">10 Teilnehmer</option>
                     </select>
                 </fieldset>
 
                 <fieldset id="predefinedlist">
                     <legend>Zeiten</legend>
-                    <input name="predefined" type="button" value="MO 13:00" class="row1" disabled>
-                    <input name="predefined" type="button" value="MO 14:30" class="row1" disabled>
-                    <input name="predefined" type="button" value="MO 15:15" class="row1" disabled>
-                    <input name="predefined" type="button" value="DI 09:00" class="row2" disabled>
-                    <input name="predefined" type="button" value="DI 10:30" class="row2" disabled>
-                    <input name="predefined" type="button" value="DI 13:00" class="row2" disabled>
-                    <input name="predefined" type="button" value="DI 14:30" class="row2" disabled>
-                    <input name="predefined" type="button" value="MI 08:00" class="row3" disabled>
+                    <input name="predefined" type="button" value="MO 13:00" class="row1" tabindex="-1" disabled>
+                    <input name="predefined" type="button" value="MO 14:30" class="row1" tabindex="-1" disabled>
+                    <input name="predefined" type="button" value="MO 15:15" class="row1" tabindex="-1" disabled>
+                    <input name="predefined" type="button" value="DI 09:00" class="row2" tabindex="-1" disabled>
+                    <input name="predefined" type="button" value="DI 10:30" class="row2" tabindex="-1" disabled>
+                    <input name="predefined" type="button" value="DI 13:00" class="row2" tabindex="-1" disabled>
+                    <input name="predefined" type="button" value="DI 14:30" class="row2" tabindex="-1" disabled>
+                    <input name="predefined" type="button" value="MI 08:00" class="row3" tabindex="-1" disabled>
                 </fieldset>
 
                 <fieldset>
@@ -218,13 +225,13 @@
             <thead>
                 <tr>
                     <th rowspan="2">Name</th>
-                    <th rowspan="2"><input name="staffname" data-staff="physician1" value="med1" required /></th>
-                    <th rowspan="2"><input name="staffname" data-staff="physician2" value="med2" required></th>
-                    <th rowspan="2"><input name="staffname" data-staff="physician3" value="med3" required></th>
-                    <th colspan="2"><input name="staffname" data-staff="psychologist1" value="psy1" required></th>
-                    <th colspan="2"><input name="staffname" data-staff="psychologist2" value="psy2" required></th>
-                    <th colspan="2"><input name="staffname" data-staff="psychologist3" value="psy3" required></th>
-                    <th colspan="2"><input name="staffname" data-staff="psychologist4" value="psy4" required></th>
+                    <th rowspan="2"><input id="setting-staffname-physician1" name="staffname" value="med1" required></th>
+                    <th rowspan="2"><input id="setting-staffname-physician2" name="staffname" value="med2" required></th>
+                    <th rowspan="2"><input id="setting-staffname-physician3" name="staffname" value="med3" required></th>
+                    <th colspan="2"><input id="setting-staffname-psychologist1" name="staffname" value="psy1" required></th>
+                    <th colspan="2"><input id="setting-staffname-psychologist2" name="staffname" value="psy2" required></th>
+                    <th colspan="2"><input id="setting-staffname-psychologist3" name="staffname" value="psy3" required></th>
+                    <th colspan="2"><input id="setting-staffname-psychologist4" name="staffname" value="psy4" required></th>
                 </tr>
                 <tr>
                     <th>Test</th>
@@ -239,53 +246,151 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><input name="username" id="settings-username-0" value="Teilnehmer 1"></td>
-                    <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="0"></td>
-                    <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="0"></td>
-                    <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="0"></td>
-                    <td><input name="appointment" data-staff="psychologist1" data-task="test" data-user="0"></td>
-                    <td><input name="appointment" data-staff="psychologist1" data-task="report" data-user="0"></td>
-                    <td><input name="appointment" data-staff="psychologist2" data-task="test" data-user="0"></td>
-                    <td><input name="appointment" data-staff="psychologist2" data-task="report" data-user="0"></td>
-                    <td><input name="appointment" data-staff="psychologist3" data-task="test" data-user="0"></td>
-                    <td><input name="appointment" data-staff="psychologist3" data-task="report" data-user="0"></td>
-                    <td><input name="appointment" data-staff="psychologist4" data-task="test" data-user="0"></td>
-                    <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="0"></td>
+                    <td><input id="setting-username-0" name="username" value="Teilnehmer 1"></td>
+                    <td><input id="appointment-physician1-checkup-0" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-0" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-0" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-0" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-0" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-0" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-0" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-0" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-0" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-0" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-0" name="appointment"></td>
                 </tr>
                 <tr>
-                    <td><input name="username" id="settings-username-1" value="Teilnehmer 2"></td>
-                    <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="1"></td>
-                    <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="1"></td>
-                    <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="1"></td>
-                    <td><input name="appointment" data-staff="psychologist1" data-task="test" data-user="1"></td>
-                    <td><input name="appointment" data-staff="psychologist1" data-task="report" data-user="1"></td>
-                    <td><input name="appointment" data-staff="psychologist2" data-task="test" data-user="1"></td>
-                    <td><input name="appointment" data-staff="psychologist2" data-task="report" data-user="1"></td>
-                    <td><input name="appointment" data-staff="psychologist3" data-task="test" data-user="1"></td>
-                    <td><input name="appointment" data-staff="psychologist3" data-task="report" data-user="1"></td>
-                    <td><input name="appointment" data-staff="psychologist4" data-task="test" data-user="1"></td>
-                    <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="1"></td>
+                    <td><input id="setting-username-1" name="username" value="Teilnehmer 2"></td>
+                    <td><input id="appointment-physician1-checkup-1" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-1" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-1" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-1" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-1" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-1" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-1" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-1" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-1" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-1" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-1" name="appointment"></td>
                 </tr>
                 <tr>
-                    <td><input name="username" id="settings-username-2" value="Teilnehmer 3"></td>
-                    <td><input name="appointment" data-staff="physician1" data-task="checkup" data-user="2"></td>
-                    <td><input name="appointment" data-staff="physician2" data-task="checkup" data-user="2"></td>
-                    <td><input name="appointment" data-staff="physician3" data-task="checkup" data-user="2"></td>
-                    <td><input name="appointment" data-staff="psychologist1" data-task="test" data-user="2"></td>
-                    <td><input name="appointment" data-staff="psychologist1" data-task="report" data-user="2"></td>
-                    <td><input name="appointment" data-staff="psychologist2" data-task="test" data-user="2"></td>
-                    <td><input name="appointment" data-staff="psychologist2" data-task="report" data-user="2"></td>
-                    <td><input name="appointment" data-staff="psychologist3" data-task="test" data-user="2"></td>
-                    <td><input name="appointment" data-staff="psychologist3" data-task="report" data-user="2"></td>
-                    <td><input name="appointment" data-staff="psychologist4" data-task="test" data-user="2"></td>
-                    <td><input name="appointment" data-staff="psychologist4" data-task="report" data-user="2"></td>
+                    <td><input id="setting-username-2" name="username" value="Teilnehmer 3"></td>
+                    <td><input id="appointment-physician1-checkup-2" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-2" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-2" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-2" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-2" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-2" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-2" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-2" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-2" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-2" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-2" name="appointment"></td>
+                </tr>
+                <tr>
+                    <td><input id="setting-username-3" name="username" value="Teilnehmer 4"></td>
+                    <td><input id="appointment-physician1-checkup-3" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-3" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-3" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-3" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-3" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-3" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-3" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-3" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-3" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-3" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-3" name="appointment"></td>
+                </tr>
+                <tr>
+                    <td><input id="setting-username-4" name="username" value="Teilnehmer 5"></td>
+                    <td><input id="appointment-physician1-checkup-4" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-4" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-4" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-4" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-4" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-4" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-4" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-4" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-4" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-4" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-4" name="appointment"></td>
+                </tr>
+                <tr>
+                    <td><input id="setting-username-5" name="username" value="Teilnehmer 6"></td>
+                    <td><input id="appointment-physician1-checkup-5" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-5" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-5" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-5" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-5" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-5" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-5" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-5" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-5" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-5" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-5" name="appointment"></td>
+                </tr>
+                <tr>
+                    <td><input id="setting-username-6" name="username" value="Teilnehmer 7"></td>
+                    <td><input id="appointment-physician1-checkup-6" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-6" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-6" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-6" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-6" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-6" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-6" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-6" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-6" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-6" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-6" name="appointment"></td>
+                </tr>
+                <tr>
+                    <td><input id="setting-username-7" name="username" value="Teilnehmer 8"></td>
+                    <td><input id="appointment-physician1-checkup-7" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-7" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-7" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-7" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-7" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-7" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-7" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-7" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-7" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-7" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-7" name="appointment"></td>
+                </tr>
+                <tr>
+                    <td><input id="setting-username-8" name="username" value="Teilnehmer 9"></td>
+                    <td><input id="appointment-physician1-checkup-8" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-8" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-8" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-8" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-8" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-8" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-8" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-8" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-8" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-8" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-8" name="appointment"></td>
+                </tr>
+                <tr>
+                    <td><input id="setting-username-9" name="username" value="Teilnehmer 10"></td>
+                    <td><input id="appointment-physician1-checkup-9" name="appointment"></td>
+                    <td><input id="appointment-physician2-checkup-9" name="appointment"></td>
+                    <td><input id="appointment-physician3-checkup-9" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-test-9" name="appointment"></td>
+                    <td><input id="appointment-psychologist1-report-9" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-test-9" name="appointment"></td>
+                    <td><input id="appointment-psychologist2-report-9" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-test-9" name="appointment"></td>
+                    <td><input id="appointment-psychologist3-report-9" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-test-9" name="appointment"></td>
+                    <td><input id="appointment-psychologist4-report-9" name="appointment"></td>
                 </tr>
             </tbody>
         </table>
         <main id="preview">
             <article>
                 <header>
-                    <h2>Termine für <output for="settings-username-0">Teilnehmer 1</output></h2>
+                    <h2>Termine für <output for="setting-username-0">Teilnehmer 1</output></h2>
                 </header>
                 <h3>
                     <output name="mondate">Montag</output>
@@ -298,7 +403,7 @@
             </article>
             <article>
                 <header>
-                    <h2>Termine für <output for="settings-username-1">Teilnehmer 2</output></h2>
+                    <h2>Termine für <output for="setting-username-1">Teilnehmer 2</output></h2>
                 </header>
                 <h3>
                     <output name="mondate">Montag</output>
@@ -311,7 +416,98 @@
             </article>
             <article>
                 <header>
-                    <h2>Termine für <output for="settings-username-2">Teilnehmer 3</output></h2>
+                    <h2>Termine für <output for="setting-username-2">Teilnehmer 3</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="setting-username-2">Teilnehmer 4</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="setting-username-2">Teilnehmer 5</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="setting-username-2">Teilnehmer 6</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="setting-username-2">Teilnehmer 7</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="setting-username-2">Teilnehmer 8</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="setting-username-2">Teilnehmer 9</output></h2>
+                </header>
+                <h3>
+                    <output name="mondate">Montag</output>
+                </h3>
+                <output name="monday"></output>
+                <h3>
+                    <output name="tuesdate">Dienstag</output>
+                </h3>
+                <output name="tuesday"></output>
+            </article>
+            <article>
+                <header>
+                    <h2>Termine für <output for="setting-username-2">Teilnehmer 10</output></h2>
                 </header>
                 <h3>
                     <output name="mondate">Montag</output>

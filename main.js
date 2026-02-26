@@ -139,8 +139,6 @@ const main = async (event) => {
                                     break;
                             }
                         });
-
-
                     });
                 }
             })
@@ -161,12 +159,17 @@ const main = async (event) => {
                     });
                     break;
 
-                case Object.hasOwn(item, 'value'):
-                    data.elements[item.id].value = item.value;
-                    break;
-
                 case Object.hasOwn(item, 'valueAsNumber'):
                     data.elements[item.id].valueAsNumber = item.valueAsNumber;
+                    break;
+
+                case Object.hasOwn(item, 'value'):
+                    data.elements[item.id].value = item.value;
+
+                    // if element are referenced by label.for
+                    /*                     data.elements[item.id]?.labels?.forEach(label => {
+                                            label.textContent = item.value;
+                                        }) */
                     break;
 
                 default:
@@ -176,9 +179,12 @@ const main = async (event) => {
 
         const appointments = await tx.appointments.getAll(id);
 
+        data.elements.commontimes.value = '';
+        
         for (const item of appointments) {
             switch (true) {
                 case (item.user === -1):
+                    data.elements.commontimes.value += `${gett(item.start)} ${item.title}\n`;
                     break;
 
                 case (item.active === 1):
@@ -194,93 +200,63 @@ const main = async (event) => {
             }
 
         }
+
+        Array.from(data.elements.staff).forEach((option, i) => {
+            option.label = data.elements.staffname[i].value;
+        });
     }
 
     // USERNAME
-    data.elements.username.forEach((elem, i) => {
+    data.elements.username.forEach(elem => {
 
-        function update(id) {
-            document.querySelectorAll(`[for=${id}]`).forEach(output => {
-                output.value = elem.value;
-            });
+        elem.addEventListener('change', async (event) => {
 
-        }
+            const tx = await berta.write('settings');
 
-        elem.addEventListener('change', (event) => {
             // prevent empty cells
-            elem.value = elem?.value || elem.defaultValue;
+            event.target.value = event.target?.value || event.target.defaultValue;
 
-            berta.write('settings').then(tx => {
-
-                if (elem.value !== elem.defaultValue) {
-                    tx.settings.put({
-                        id: elem.id,
-                        value: elem.value
+            switch (true) {
+                case (event.target.value !== event.target.defaultValue):
+                    await tx.settings.put({
+                        id: event.target.id,
+                        value: event.target.value
                     });
-                } else {
-                    tx.settings.delete(elem.id);
-                }
-            }).then(() => {
-                update(elem.id);
-            }).catch(err => {
-                console.error(err.message);
-            });
-        });
+                    break;
 
-        // load data
-        berta.read('settings').then(tx => {
-            return tx.settings.get(elem.id);
-        }).then(data => {
-            if (data) {
-                elem.value = data.value;
-                update(elem.id);
+                default:
+                    tx.settings.delete(event.target.id);
             }
-        }).catch(err => {
-            console.error(err.message)
+
+            refresh(event.target.id);
         });
     });
 
     // STAFFNAME
     data.elements.staffname.forEach((elem) => {
 
-        elem.id = ['staffname', elem.dataset.staff].join('-');
+        elem.addEventListener('change', async (event) => {
 
-        elem.addEventListener('change', (event) => {
+            const tx = await berta.write('settings');
+
             // prevent empty cells
-            elem.value = elem?.value || elem.defaultValue;
+            event.target.value = event.target?.value || event.target.defaultValue;
 
             switch (true) {
-                case (elem.value !== elem.defaultValue):
-                    berta.write('settings').then(tx => {
-                        tx.settings.put({
-                            id: elem.id,
-                            value: elem.value
-                        });
-                    }).catch(err => {
-                        console.error(err.message);
+                case (event.target.value !== event.target.defaultValue):
+                    await tx.settings.put({
+                        id: event.target.id,
+                        value: event.target.value
                     });
                     break;
+
                 default:
-                    berta.write('settings').then(tx => {
-                        tx.settings.delete(elem.id);
-                    }).catch(err => {
-                        console.error(err.message);
-                    });
+                    await tx.settings.delete(event.target.id);
             }
-
             // prevent resetting on reset
-            elem.setAttribute('value', elem.value);
-        }); // change
+            //elem.setAttribute('value', event.target.value);
 
-        // load data
-        berta.read('settings').then(tx => {
-            return tx.settings.get(elem.id);
-        }).then(data => {
-            if (data) {
-                elem.value = data.value;
-            }
-        }).catch(err => {
-            console.error(err.message)
+            refresh();
         });
     });
 
@@ -305,6 +281,7 @@ const main = async (event) => {
             )
         }
 
+        validate();
         refresh();
     });
 
@@ -333,12 +310,7 @@ const main = async (event) => {
     // APPOINTMENT
     data.elements.appointment.forEach((elem) => {
 
-        elem.id = Object.values(elem.dataset).join('-');
         elem.pattern = "(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9]";
-
-        elem.addEventListener('input', (event) => {
-            elem.setCustomValidity('');
-        });
 
         function onpredefined(event) {
             event.preventDefault();
@@ -351,11 +323,13 @@ const main = async (event) => {
         elem.addEventListener('focusin', async (event) => {
             data.elements.predefinedlist.addEventListener('mousedown', onpredefined);
 
+            const [_, staff, task, user] = event.target.id.split('-');
+
             const tx = await berta.read('appointments');
             const entries = (
                 await tx.appointments.queryOr(
-                    'user', dberta.eq(parseInt(elem.dataset.user)),
-                    'staff', dberta.eq(elem.dataset.staff)
+                    'user', dberta.eq(parseInt(user)),
+                    'staff', dberta.eq(staff)
                 )
             ).filter(entry => entry.active === 1);
 
@@ -366,7 +340,7 @@ const main = async (event) => {
 
                     const
                         start1 = getn(input.value),
-                        end1 = start1 + durations[elem.dataset.task],
+                        end1 = start1 + durations[task],
                         start2 = entry.start,
                         end2 = start2 + durations[entry.task];
 
@@ -385,54 +359,39 @@ const main = async (event) => {
             });
         });
 
-        elem.addEventListener('change', (event) => {
+        elem.addEventListener('input', (event) => {
+            event.target.setCustomValidity('');
+        });
+
+        elem.addEventListener('change', async (event) => {
+            const [_, staff, task, user] = event.target.id.split('-');
+            const tx = await berta.write('appointments');
 
             switch (true) {
-                case (elem.value && elem.validity.valid):
-
-                    berta.write('appointments').then(tx => {
-                        tx.appointments.put({
-                            id: elem.id,
-                            start: getn(elem.value),
-                            user: parseInt(elem.dataset.user),
-                            staff: elem.dataset.staff,
-                            task: elem.dataset.task,
-                            active: 1
-                        });
-                    }).then(() => {
-                        validate();
-                    }).catch(err => {
-                        console.error(err.message);
+                case (event.target.value && event.target.validity.valid):
+                    await tx.appointments.put({
+                        id: event.target.id,
+                        start: getn(event.target.value),
+                        user: parseInt(user),
+                        staff: staff,
+                        task: task,
+                        active: 1
                     });
+                    validate();
                     break;
 
-                case (!elem.value):
-                    berta.write('appointments').then(tx => {
-                        tx.appointments.delete(elem.id);
-                    }).then(() => {
-                        elem.setCustomValidity('');
-                        validate();
-                    }).catch(err => {
-                        console.error(err.message)
-                    });
+                case (!event.target.value):
+                    await tx.appointments.delete(event.target.id);
+                    event.target.setCustomValidity('');
+                    validate();
                     break;
                 default:
-                    console.log('error', elem.value)
+                    console.log('error', event.target.value)
             }
-        }); // change
-
-        // load data
-        // berta.read('appointments').then(tx => {
-        //     return tx.appointments.get(elem.id);
-        // }).then(data => {
-        //     if (data) {
-        //         elem.value = gett(data.start)
-        //     }
-        // }).catch(err => {
-        //     console.error(err.message)
-        // });
+        });
     });
 
+    // COMMONTIMES
     const reg = new RegExp(/^(?<start>(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9])\s(?<title>.+)/, 'm');
 
     data.elements.commontimes.addEventListener('change', async (event) => {
@@ -485,23 +444,6 @@ const main = async (event) => {
         event.target.value = lines.join('\n');
     });
 
-    // load data
-    const tx = await berta.read('appointments');
-    const arr = await tx.appointments.queryAnd(
-        'active', dberta.eq(1),
-        'user', dberta.lt(0)
-    )
-
-    arr.forEach(item => {
-        data.elements.commontimes.value += `${gett(item.start)} ${item.title}\n`
-    })
-
-    // PREDEFINED
-    data.elements.predefined.forEach(elem => {
-        elem.tabIndex = -1;
-    });
-
-
     // TEMPLATES
     data.elements.templates.addEventListener('change', async (event) => {
         promptTemplateChange.showModal();
@@ -535,7 +477,7 @@ const main = async (event) => {
             valueAsNumber: event.target.valueAsNumber
         });
     });
-    
+
 
     // first run
     if (berta.updated) {
@@ -546,9 +488,11 @@ const main = async (event) => {
     }
 
     addEventListener("beforeprint", (event) => { render() });
-    
-    refresh();
+
     validate();
+    refresh();
+
+
 }
 
 addEventListener('load', main);
