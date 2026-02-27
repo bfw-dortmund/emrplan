@@ -1,4 +1,4 @@
-@scope (table) {
+@scope (form>table) {
 
     :scope {
         font-size: 12px;
@@ -49,7 +49,7 @@
     }
 }
 
-@scope (thead) {
+@scope (form>table>thead) {
 
     input {
         width: 100%;
@@ -64,7 +64,7 @@
     }
 }
 
-@scope (tbody) {
+@scope (form>table>tbody) {
 
     input {
         width: 100%;

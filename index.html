@@ -6,6 +6,10 @@
     <meta charset="utf-8">
 
     <style>
+        @page {
+            size: 210mm 297mm;
+        }
+
         @font-face {
             font-family: 'segoeui';
             src: url('fonts/segoeuithis-webfont.woff2') format('woff2'),
@@ -23,7 +27,7 @@
         }
 
         :root {
-            width: 1200px;
+            /* width: 1200px; */
             font-family: segoeui;
             line-height: 1;
         }
@@ -44,7 +48,7 @@
             body>form>header,
             thead,
             tfoot,
-            table,
+            body>form>table,
             footer,
             nav {
                 display: none;
@@ -53,7 +57,7 @@
     </style>
 
     <link href="header.css" rel="stylesheet">
-    <link href="article.css" rel="stylesheet">
+    <!--  <link href="article.css" rel="stylesheet"> -->
     <link href="table.css" rel="stylesheet">
 
     <script src="dberta.js"></script>
@@ -225,13 +229,20 @@
             <thead>
                 <tr>
                     <th rowspan="2">Name</th>
-                    <th rowspan="2"><input id="setting-staffname-physician1" name="staffname" value="med1" required></th>
-                    <th rowspan="2"><input id="setting-staffname-physician2" name="staffname" value="med2" required></th>
-                    <th rowspan="2"><input id="setting-staffname-physician3" name="staffname" value="med3" required></th>
-                    <th colspan="2"><input id="setting-staffname-psychologist1" name="staffname" value="psy1" required></th>
-                    <th colspan="2"><input id="setting-staffname-psychologist2" name="staffname" value="psy2" required></th>
-                    <th colspan="2"><input id="setting-staffname-psychologist3" name="staffname" value="psy3" required></th>
-                    <th colspan="2"><input id="setting-staffname-psychologist4" name="staffname" value="psy4" required></th>
+                    <th rowspan="2"><input id="setting-staffname-physician1" name="staffname" value="med1" required>
+                    </th>
+                    <th rowspan="2"><input id="setting-staffname-physician2" name="staffname" value="med2" required>
+                    </th>
+                    <th rowspan="2"><input id="setting-staffname-physician3" name="staffname" value="med3" required>
+                    </th>
+                    <th colspan="2"><input id="setting-staffname-psychologist1" name="staffname" value="psy1" required>
+                    </th>
+                    <th colspan="2"><input id="setting-staffname-psychologist2" name="staffname" value="psy2" required>
+                    </th>
+                    <th colspan="2"><input id="setting-staffname-psychologist3" name="staffname" value="psy3" required>
+                    </th>
+                    <th colspan="2"><input id="setting-staffname-psychologist4" name="staffname" value="psy4" required>
+                    </th>
                 </tr>
                 <tr>
                     <th>Test</th>
@@ -388,6 +399,87 @@
             </tbody>
         </table>
         <main id="preview">
+            <style>
+                @scope {
+                    article {
+                        display: flex;
+                        flex-flow: column;
+                        row-gap: 16px;
+                    }
+
+                    footer {
+                        display: flex;
+                        text-align: center;
+                        justify-content: center;
+                        align-items: end;
+                        flex: 1;
+                    }
+
+                    @media print {
+                        :root {
+                            width: 210mm;
+                        }
+
+                        :scope {
+                            display: block;
+                        }
+
+                        article {
+                            break-after: page;
+                            width: 210mm;
+                            height: 297mm;
+                        }
+                    }
+
+                    caption {
+                        text-align: start;
+                        font-weight: bold;
+                        padding: 2px 5px 2px 0;
+                    }
+
+                    table {
+                        width: 100%;
+                        /* margin: 16px 0; */
+                        border-spacing: 0;
+                    }
+
+                    td {
+                        padding: 4px 5px 4px 0;
+
+                        &:last-of-type {
+                            width: 100%;
+                        }
+                    }
+                }
+            </style>
+            <article>
+                <header>
+                    <h2>
+                        Untersuchungsstelle EMR<br>Ihre Termine
+                    </h2>
+                    <p>für: <span></span></p>
+                </header>
+                <table>
+                    <caption>Montag</caption>
+                </table>
+                <table>
+                    <caption>Dienstag</caption>
+                </table>
+                <table>
+                    <caption>Mittwoch</caption>
+                </table>
+                <table>
+                    <caption>Donnerstag</caption>
+                </table>
+                <table>
+                    <caption>Freitag</caption>
+                </table>
+                <footer>
+                    Bitte nicht vergessen, Chipkarte und Schlüssel am<br>Empfang abzugeben!
+                </footer>
+            </article>
+        </main>
+        <mains id="previewX" style="display: none;">
             <article>
                 <header>
                     <h2>Termine für <output for="setting-username-0">Teilnehmer 1</output></h2>
@@ -395,6 +487,7 @@
                 <h3>
                     <output name="mondate">Montag</output>
                 </h3>
+                <dl></dl>
                 <output name="monday"></output>
                 <h3>
                     <output name="tuesdate">Dienstag</output>
@@ -518,7 +611,7 @@
                 </h3>
                 <output name="tuesday"></output>
             </article>
-        </main>
+        </mains>
         <dialog id="dlgfile">
             dlgfile
         </dialog>

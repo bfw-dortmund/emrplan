@@ -72,76 +72,67 @@ const main = async (event) => {
         });
     }
 
-    const render = () => {
+    const render = async () => {
         const week = new Date(data.elements.week.valueAsNumber);
         const instant = week.toTemporalInstant();
         const zdt = instant.toZonedDateTimeISO("UTC");
         const date = zdt.toPlainDate();
-        //console.log(week)
-        data.elements.monday.forEach(elem => elem.value = '');
-        data.elements.mondate.forEach(elem => elem.value = dateOrHoliday(date));
 
-        data.elements.tuesday.forEach(elem => elem.value = '');
-        data.elements.tuesdate.forEach(elem => elem.value = dateOrHoliday(date.add({ days: 1 })));
+        const tx = await berta.read('appointments');
+        const arr1 = await tx.appointments.where('user', dberta.lt(0));
 
-        berta.read('appointments').then(tx => {
+        preview.querySelectorAll('article').forEach(async (article, nuser) => {
 
-            // 1st collect common appointments
-            tx.appointments.queryAnd(
-                'active', dberta.eq(1),
-                'user', dberta.lt(0)
-            ).then(arr1 => {
-                // total number off active user
-                const count = parseInt(data.elements.participants.value) + 1;
+            // cleanup
+            article.querySelectorAll('tr').forEach(tr => tr.remove());
+            
+            article.querySelector('span').textContent =
+                data.elements.username[nuser].value;
 
-                // 2nd collect appointments by user
-                for (const user of [...Array(count).keys()]) {
-                    tx.appointments.queryAnd(
-                        'active', dberta.eq(1),
-                        'user', dberta.eq(user)
-                    ).then(arr2 => {
-                        // 3rd merge common and user appointments
-                        const arr = arr1.concat(arr2);
-                        arr.sort((a, b) => (a.start - b.start));
+            article.querySelectorAll('caption').forEach((caption, i) => {
+                caption.textContent = dateOrHoliday(date.add({ days: i }));
+            });
 
-                        arr.forEach((item, i, arr) => {
-                            const [item1, item2] = arr.slice(i, i + 2);
+            const tables = article.querySelectorAll('table');
 
-                            if (item2 !== undefined) {
-                                const
-                                    start1 = item1.start,
-                                    end1 = start1 + durations[item1.task],
-                                    start2 = item2.start,
-                                    end2 = start2 + durations[item2.task];
+            const arr2 = await tx.appointments.queryAnd(
+                'user', dberta.eq(nuser),
+                'active', dberta.eq(1)
+            );
 
-                                console.assert(Number.isInteger(start1), start1);
-                                console.assert(Number.isInteger(start2), start2);
-                                console.assert(Number.isInteger(end1), end1);
-                                console.assert(Number.isInteger(end2), end2);
+            const arr = arr1.concat(arr2)
+                .sort((a, b) => (a.start - b.start));
 
-                                if ((start1 < end2) && (end1 > start2)) {
-                                    if (0 > item.user) {
-                                        return;
-                                    }
+            arr.forEach((item, i) => {
+                const [item1, item2] = arr.slice(i, i + 2);
 
-                                    arr.splice(i + 1, 1);
-                                }
-                            }
+                if (item2 !== undefined) {
+                    const
+                        start1 = item1.start,
+                        end1 = start1 + durations[item1.task],
+                        start2 = item2.start,
+                        end2 = start2 + durations[item2.task];
 
-                            const text = `${gett(item.start).substring(3)} ${item?.title || title[item.task]}\n`;
+                    if ((start1 < end2) && (end1 > start2)) {
+                        if (0 > item.user) {
+                            return;
+                        }
 
-                            switch (true) {
-                                case (0 <= item.start && item.start < 1440):
-                                    data.elements[`monday`][user].value += text;
-                                    break;
-                                case (1440 <= item.start && item.start < 2880):
-                                    data.elements[`tuesday`][user].value += text;
-                                    break;
-                            }
-                        });
-                    });
+                        arr.splice(i + 1, 1);
+                    }
                 }
-            })
+
+                // daynumber: mon = 0, tue = 1, ...
+                const n = Math.trunc(item.start / 1440);
+
+                tables[n].insertAdjacentHTML('beforeend', `
+                    <tr>
+                        <td>${gett(item.start).substring(3)}</td>
+                        <td>${item.title}</td>
+                    </tr>
+                `);
+
+            });
         });
     }
 
@@ -165,11 +156,6 @@ const main = async (event) => {
 
                 case Object.hasOwn(item, 'value'):
                     data.elements[item.id].value = item.value;
-
-                    // if element are referenced by label.for
-                    /*                     data.elements[item.id]?.labels?.forEach(label => {
-                                            label.textContent = item.value;
-                                        }) */
                     break;
 
                 default:
@@ -180,7 +166,7 @@ const main = async (event) => {
         const appointments = await tx.appointments.getAll(id);
 
         data.elements.commontimes.value = '';
-        
+
         for (const item of appointments) {
             switch (true) {
                 case (item.user === -1):
@@ -373,6 +359,7 @@ const main = async (event) => {
                         id: event.target.id,
                         start: getn(event.target.value),
                         user: parseInt(user),
+                        title: title[task],
                         staff: staff,
                         task: task,
                         active: 1
@@ -492,7 +479,7 @@ const main = async (event) => {
     validate();
     refresh();
 
-
+    render()
 }
 
 addEventListener('load', main);

@@ -20,44 +20,47 @@ function dateOfEaster(tpd) {
 }
 
 function dateOrHoliday(tpd) {
-    const options = {
-       // weekday: "long",
-        year: "numeric",
-        month: "numeric",
-        day: "numeric"
-    }
     const easter = dateOfEaster(tpd);
-    const date = tpd.toLocaleString("de", options);
+    const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }
+
+    const parts = new Intl.DateTimeFormat("de", options)
+        .formatToParts(tpd);
+    const date = parts.map(x => x.value).join('');
 
     switch (true) {
-        case tpd.equals({year: tpd.year, month: 1, day: 1}):
-            return `${date}, Neujahr`
+        case tpd.equals({ year: tpd.year, month: 1, day: 1 }):
+            return `${date} (Neujahr)`
         case easter.subtract({ days: 48 }).equals(tpd):
-            return `${date}, Rosenmontag`
+            return `${date} (Rosenmontag)`
         case easter.subtract({ days: 2 }).equals(tpd):
-            return `${date}, Karfreitag`
+            return `${date} (Karfreitag)`
         case easter.add({ days: 1 }).equals(tpd):
-            return `${date}, Ostermontag`
-        case tpd.equals({year: tpd.year, month: 5, day: 1}):
-            return `${date}, Tag der Arbeit`
+            return `${date} (Ostermontag)`
+        case tpd.equals({ year: tpd.year, month: 5, day: 1 }):
+            return `${date} (Tag der Arbeit)`
         case easter.add({ days: 39 }).equals(tpd):
-            return `${date}, Christi Himmelfahrt`
+            return `${date} (Christi Himmelfahrt)`
         case easter.add({ days: 50 }).equals(tpd):
-            return `${date}, Pfingstmontag`
+            return `${date} (Pfingstmontag)`
         case easter.add({ days: 60 }).equals(tpd):
-            return `${date}, Fronleichnam`
-        case tpd.equals({year: tpd.year, month: 10, day: 3}):
-            return `${date}, Tag der Deutschen Einheit`
-        case tpd.equals({year: tpd.year, month: 11, day: 1}):
-            return `${date}, Allerheiligen`
-        case tpd.equals({year: tpd.year, month: 12, day: 24}):
-            return `${date}, Heiligabend`
-        case tpd.equals({year: tpd.year, month: 12, day: 25}):
-            return `${date}, 1. Weihnachtsfeiertag`
-        case tpd.equals({year: tpd.year, month: 12, day: 26}):
-            return `${date}, 2. Weihnachtsfeiertag`
-        case tpd.equals({year: tpd.year, month: 12, day: 31}):
-            return `${date}, Silvester`
+            return `${date} (Fronleichnam)`
+        case tpd.equals({ year: tpd.year, month: 10, day: 3 }):
+            return `${date} (Tag der Deutschen Einheit)`
+        case tpd.equals({ year: tpd.year, month: 11, day: 1 }):
+            return `${date} (Allerheiligen)`
+        case tpd.equals({ year: tpd.year, month: 12, day: 24 }):
+            return `${date} (Heiligabend)`
+        case tpd.equals({ year: tpd.year, month: 12, day: 25 }):
+            return `${date} (1. Weihnachtsfeiertag)`
+        case tpd.equals({ year: tpd.year, month: 12, day: 26 }):
+            return `${date} (2. Weihnachtsfeiertag)`
+        case tpd.equals({ year: tpd.year, month: 12, day: 31 }):
+            return `${date} (Silvester)`
         default:
             return date
     }
