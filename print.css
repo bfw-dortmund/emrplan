@@ -1,5 +1,6 @@
-@scope (main) {
+/* @scope (main) {
     article {
+            position: relative;
         display: flex;
         flex-flow: column;
         row-gap: 16px;
@@ -23,6 +24,9 @@
         }
 
         article {
+            position: relative;
+            background-size: cover;
+            background-image: url(bg.png);
             break-after: page;
             width: 210mm;
             height: 297mm;
@@ -37,7 +41,7 @@
 
     table {
         width: 100%;
-        /* margin: 16px 0; */
+        /* margin: 16px 0; * /
         border-spacing: 0;
     }
 
@@ -49,7 +53,7 @@
         }
     }
 }
-
+ */
 @media print {
 
     body>form>header,

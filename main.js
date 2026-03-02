@@ -82,7 +82,7 @@ const main = async (event) => {
         const arr1 = await tx.appointments.where('user', dberta.lt(0));
 
         preview.querySelectorAll('article').forEach(async (article, nuser) => {
-            console.log(nuser)
+            /* console.log(nuser) */
             // cleanup
             article.querySelectorAll('tr').forEach(tr => tr.remove());
 
@@ -215,6 +215,7 @@ const main = async (event) => {
             }
 
             refresh(event.target.id);
+            render();
         });
     });
 
@@ -375,6 +376,8 @@ const main = async (event) => {
                 default:
                     console.log('error', event.target.value)
             }
+
+            render();
         });
     });
 
@@ -449,11 +452,12 @@ const main = async (event) => {
     // WEEK
     data.elements.week.addEventListener('change', async (event) => {
         const tx = await berta.write('settings');
-console.log(event.target.id)
+/* console.log(event.target.id) */
         await tx.settings.put({
             id: event.target.id,
             valueAsNumber: event.target.valueAsNumber
         });
+        render();
     });
 
     // FILEMENU

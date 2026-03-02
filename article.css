@@ -1,4 +1,123 @@
-@page a4 {
+@scope(main) {
+
+    :scope {
+        font-family: 'Fira Sans';
+        display: flex;
+        flex-flow: column;
+        gap: 5mm;
+    }
+
+    article {
+        display: flex;
+        flex-flow: column;
+        gap: 5mm;
+        position: relative;
+        width: 210mm;
+        height: 297mm;
+        /* border: 1px solid red; */
+        margin: auto;
+        background-size: contain;
+        background-image: url(images/bfw-logo.jpg);
+        background-repeat: no-repeat;
+        background-position: 135mm 13mm;
+        background-size: 50mm;
+        /*         background-size: 210mm 297mm;
+        background-image: url(bg.png); */
+        padding: 26mm 25mm 25mm 32mm;
+    }
+
+    footer {
+        /* background-color: #ddd; */
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        font-style: italic;
+        text-align: center;
+        flex: 1;
+    }
+
+    header {
+        height: 30mm;
+        color: gray;
+
+        h2 {
+            height: 17mm;
+        }
+
+        & h2,
+        & p {
+            font-weight: normal;
+            font-style: italic;
+            font-size: 14pt;
+        }
+    }
+
+    table {
+        border-spacing: 0 1.5mm;
+        /* outline: 1px solid red; */
+        font-size: 11pt;
+        width: 100%;
+
+        & caption {
+            text-align: start;
+            font-weight: bold;
+        }
+
+        & td {
+            &:last-of-type {
+                padding: 0 0 0 5mm;
+                width: 100%;
+            }
+        }
+    }
+
+    /* ARTICLES VISIBILITY */
+    article:nth-of-type(n+1) {
+        display: none;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(1):checked) :nth-last-of-type(n+10)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(2):checked) :nth-last-of-type(n+9)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(3):checked) :nth-last-of-type(n+8)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(4):checked) :nth-last-of-type(n+7)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(5):checked) :nth-last-of-type(n+6)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(6):checked) :nth-last-of-type(n+5)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(7):checked) :nth-last-of-type(n+4)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(8):checked) :nth-last-of-type(n+3)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(9):checked) :nth-last-of-type(n+2)) {
+        display: flex;
+    }
+
+    article:is(form:has([name="participants"] :nth-of-type(10):checked) :nth-last-of-type(n+1)) {
+        display: flex;
+    }
+}
+
+/* @page a4 {
     size: a4 portrait;
 }
 
@@ -24,7 +143,7 @@
         margin: auto;
     }
 
-    /* ARTICLES VISIBILITY */
+    /* ARTICLES VISIBILITY * /
     article:nth-of-type(n+2) {
         display: none;
     }
@@ -45,4 +164,4 @@
         white-space: pre;
         line-height: 1.5;
     }
-}
+} */
