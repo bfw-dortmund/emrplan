@@ -41,21 +41,17 @@
             rotate: 180deg;
         }
 
-
-
-        @media print {
-
-            body>form>header,
-            thead,
-            tfoot,
-            body>form>table,
-            footer,
-            nav {
-                display: none;
-            }
+        dialog {
+            max-width: unset;
+            max-height: unset;
+            border: unset;
         }
     </style>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="manifest.json">
+
+    <link href="print.css" rel="stylesheet" media="print">
     <link href="header.css" rel="stylesheet">
     <!--  <link href="article.css" rel="stylesheet"> -->
     <link href="table.css" rel="stylesheet">
@@ -139,6 +135,7 @@
                 <li>
                     <button type="button" command="show-modal" commandfor="dlgfile">Datei</button>
                     <button type="button">Start</button>
+                    <button type="button">0.0.2</button>
                 </li>
             </menu>
 
@@ -399,59 +396,6 @@
             </tbody>
         </table>
         <main id="preview">
-            <style>
-                @scope {
-                    article {
-                        display: flex;
-                        flex-flow: column;
-                        row-gap: 16px;
-                    }
-
-                    footer {
-                        display: flex;
-                        text-align: center;
-                        justify-content: center;
-                        align-items: end;
-                        flex: 1;
-                    }
-
-                    @media print {
-                        :root {
-                            width: 210mm;
-                        }
-
-                        :scope {
-                            display: block;
-                        }
-
-                        article {
-                            break-after: page;
-                            width: 210mm;
-                            height: 297mm;
-                        }
-                    }
-
-                    caption {
-                        text-align: start;
-                        font-weight: bold;
-                        padding: 2px 5px 2px 0;
-                    }
-
-                    table {
-                        width: 100%;
-                        /* margin: 16px 0; */
-                        border-spacing: 0;
-                    }
-
-                    td {
-                        padding: 4px 5px 4px 0;
-
-                        &:last-of-type {
-                            width: 100%;
-                        }
-                    }
-                }
-            </style>
             <article>
                 <header>
                     <h2>
@@ -479,151 +423,36 @@
                 </footer>
             </article>
         </main>
-        <mains id="previewX" style="display: none;">
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-0">Teilnehmer 1</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <dl></dl>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-1">Teilnehmer 2</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-2">Teilnehmer 3</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-2">Teilnehmer 4</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-2">Teilnehmer 5</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-2">Teilnehmer 6</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-2">Teilnehmer 7</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-2">Teilnehmer 8</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-2">Teilnehmer 9</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-            <article>
-                <header>
-                    <h2>Termine für <output for="setting-username-2">Teilnehmer 10</output></h2>
-                </header>
-                <h3>
-                    <output name="mondate">Montag</output>
-                </h3>
-                <output name="monday"></output>
-                <h3>
-                    <output name="tuesdate">Dienstag</output>
-                </h3>
-                <output name="tuesday"></output>
-            </article>
-        </mains>
-        <dialog id="dlgfile">
-            dlgfile
-        </dialog>
     </form>
-    <dialog id="promptTemplateChange">
-        <fieldset>
-            <legend>Vorlage anwenden?</legend>
-            <output for="select-template"></output>
-            <button type="button" command="close" commandfor="promptTemplateChange" value="confirm">OK</button>
-            <button type="button" command="close" commandfor="promptTemplateChange" value="cancel">Abbruch</button>
-        </fieldset>
+    <dialog id="dlgconfirm">
+        dlgconfirm
+        <button value="cancel" commandfor="dlgconfirm" command="close">Cancel</button>
+        <button value="confirm" commandfor="dlgconfirm" command="close">Confirm</button>
     </dialog>
+    <dialog id="dlgfile">
+        <style>
+            @scope {
+                :scope {
+                    width: 200px;
+                    height: 100vh;
+                }
+
+                nav {
+                    display: flex;
+                    flex-flow: column;
+                    gap: 16px;
+                }
+            }
+        </style>
+        <nav>
+            <button commandfor="dlgfile" command="close">&lt--</button>
+            <button value="open" commandfor="dlgfile" command="close">Öffnen</button>
+            <button value="save" commandfor="dlgfile" command="close">Speichern</button>
+            <button value="saveAs" commandfor="dlgfile" command="close">Speichern unter</button>
+            <button value="close" commandfor="dlgfile" command="close">Schließen</button>
+        </nav>
+    </dialog>
+    <script src="files.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <title>emrp Installation</title>
+    <meta charset="utf-8">
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <p>Installation</p>
+    <button id="installButton" type="button">Installieren</button>
+    <script>
+        let installPrompt = null;
+
+        window.addEventListener("beforeinstallprompt", (event) => {
+            event.preventDefault();
+            installPrompt = event;
+            installButton.removeAttribute("hidden");
+        });
+
+        installButton.addEventListener("click", async () => {
+            if (!installPrompt) {
+                return;
+            }
+            const result = await installPrompt.prompt();
+            console.log(`Install prompt was: ${result.outcome}`);
+            installPrompt = null;
+            installButton.setAttribute("hidden", "");
+        });
+    </script>
+</body>
+
+</html>

@@ -16,7 +16,7 @@ const main = async (event) => {
     const berta = await dberta.open('emrplan', {
         1: {
             appointments: "@id, user, start, staff, task, active",
-            settings: "@id"
+            settings: "@id,"
         }
     });
 
@@ -82,10 +82,10 @@ const main = async (event) => {
         const arr1 = await tx.appointments.where('user', dberta.lt(0));
 
         preview.querySelectorAll('article').forEach(async (article, nuser) => {
-
+            console.log(nuser)
             // cleanup
             article.querySelectorAll('tr').forEach(tr => tr.remove());
-            
+
             article.querySelector('span').textContent =
                 data.elements.username[nuser].value;
 
@@ -433,42 +433,127 @@ const main = async (event) => {
 
     // TEMPLATES
     data.elements.templates.addEventListener('change', async (event) => {
-        promptTemplateChange.showModal();
-    })
-
-    promptTemplateChange.addEventListener('close', async (event) => {
-
-        const tx = await berta.write('appointments', 'settings');
-
-        switch (event.target.returnValue) {
-            case 'confirm':
-                loadTemplate(data.elements.templates.value);
-                refresh();
-                break;
-
-            case 'cancel':
-                refresh(data.elements.templates.id);
-                break;
-
-            default:
-                console.error('error')
-        }
+        dlgconfirm.addEventListener('close', event => {
+            switch (event.target.returnValue) {
+                case 'confirm':
+                    // TODO
+                    break;
+                case 'cancel':
+                default:
+                    refresh(data.elements.templates.id);
+            }
+        }, { once: true })
+        dlgconfirm.showModal();
     });
 
     // WEEK
     data.elements.week.addEventListener('change', async (event) => {
         const tx = await berta.write('settings');
-
+console.log(event.target.id)
         await tx.settings.put({
             id: event.target.id,
             valueAsNumber: event.target.valueAsNumber
         });
     });
 
+    // FILEMENU
+    dlgfile.addEventListener('close', event => {
+
+        switch (event.target.returnValue) {
+            case 'open':
+                openfile();
+                break;
+            case 'save':
+                savefile();
+                break;
+            case 'saveAs':
+
+                break;
+            case 'close':
+
+                break;
+        }
+    });
+
+    // FILEHANDLING
+    if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
+        console.log('OK')
+    }
+
+    const pickerOpts = {
+        types: [
+            {
+                description: "EMRP Files",
+                accept: {
+                    "text/json": [".emrp"],
+                },
+            },
+        ],
+        excludeAcceptAllOption: true,
+        multiple: false,
+    };
+
+    const savefile = async () => {
+
+        try {
+            const result = {}
+            const fileHandle = await window.showSaveFilePicker(pickerOpts);
+
+            const tx = await berta.read('settings', 'appointments');
+            result.settings = await tx.settings.getAll();
+            result.appointments = await tx.appointments.getAll();
+
+            const writable = await fileHandle.createWritable();
+            await writable.write(JSON.stringify(result));
+            await writable.close();
+
+        } catch (ex) {
+            switch (ex.name) {
+                case 'AbortError':
+                    break;
+                default:
+                    console.dir(ex)
+            }
+        }
+    }
+
+    const openfile = async () => {
+
+        try {
+            const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
+            
+            const file = await fileHandle.getFile();
+            const json = await file.text();
+            const obj = JSON.parse(json);
+
+            const tx = await berta.write('settings', 'appointments');
+            await tx.appointments.clear();
+            await tx.settings.clear();
+
+            for(const item of obj.settings) {
+                await tx.settings.put(item);
+            }
+
+            for(const item of obj.appointments) {
+                await tx.appointments.put(item);
+            }
+
+            refresh();
+            validate();
+
+        } catch (ex) {
+            switch (ex.name) {
+                case 'AbortError':
+                    break;
+                default:
+                    console.dir(ex)
+            }
+        }
+    }
 
     // first run
     if (berta.updated) {
-        loadTemplate('template-10-default');
+        //loadTemplate('template-10-default');
 
         data.elements.week.valueAsNumber = Date.now();
         data.elements.week.dispatchEvent(new Event('change'));
