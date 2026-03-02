@@ -1,8 +1,8 @@
 {
     "id": "emrp.cieszynski.de",
-    "name": "EMR PLAN 0.0.2",
+    "name": "EMR PLAN 0.0.3",
     "short_name": "EMR PLAN",
-    "start_url": "/index.html",
+    "start_url": "index.html",
     "display": "standalone",
     "icons": [
         {
@@ -21,7 +21,7 @@
     },
     "file_handlers": [
         {
-            "action": "/index.html",
+            "action": "index.html",
             "accept": {
                 "text/json": [
                     ".emrp"
