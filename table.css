@@ -3,6 +3,7 @@
     :scope {
         font-size: 12px;
         border-collapse: collapse;
+        min-width: max-content;
     }
 
     col {

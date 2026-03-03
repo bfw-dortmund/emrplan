@@ -1,0 +1,16 @@
+@scope (dialog) {
+    :scope {
+        width: 200px;
+        height: 100vh;
+
+        max-width: unset;
+        max-height: unset;
+        border: unset;
+    }
+
+    nav {
+        display: flex;
+        flex-flow: column;
+        gap: 16px;
+    }
+}

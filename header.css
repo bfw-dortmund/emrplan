@@ -3,6 +3,7 @@
         background-color: #efefef;
         height: 164px;
         font-size: 14px;
+        min-width: max-content;
     }
 
     div {
@@ -85,10 +86,12 @@
     textarea {
         resize: none;
         height: 100%;
+        width: 260px;
         font-family: inherit;
         line-height: 1.25;
-        font-size: 10px;
+        font-size: 12px;
         border-radius: 5px;
+        border: 1px solid black;
 
         &:invalid {
             outline: 2px solid red

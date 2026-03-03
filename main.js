@@ -82,7 +82,7 @@ const main = async (event) => {
         const arr1 = await tx.appointments.where('user', dberta.lt(0));
 
         preview.querySelectorAll('article').forEach(async (article, nuser) => {
-            /* console.log(nuser) */
+            
             // cleanup
             article.querySelectorAll('tr').forEach(tr => tr.remove());
 
@@ -102,18 +102,18 @@ const main = async (event) => {
 
             const arr = arr1.concat(arr2)
                 .sort((a, b) => (a.start - b.start));
-
+                
             arr.forEach((item, i) => {
                 const [item1, item2] = arr.slice(i, i + 2);
 
                 if (item2 !== undefined) {
                     const
                         start1 = item1.start,
-                        end1 = start1 + durations[item1.task],
+                        end1 = (item1.dur) ? start1 + item1.dur : start1 + durations[item1.task],
                         start2 = item2.start,
-                        end2 = start2 + durations[item2.task];
+                        end2 = (item2.dur) ? start2 + item2.dur : start2 + durations[item2.task];
 
-                    if ((start1 < end2) && (end1 > start2)) {
+                    if ((start1 < end2) && (start2 < end1)) {
                         if (0 > item.user) {
                             return;
                         }
@@ -164,13 +164,14 @@ const main = async (event) => {
         }
 
         const appointments = await tx.appointments.getAll(id);
-
+        appointments.sort((a, b) => (a.start - b.start));
+        
         data.elements.commontimes.value = '';
 
         for (const item of appointments) {
             switch (true) {
                 case (item.user === -1):
-                    data.elements.commontimes.value += `${gett(item.start)} ${item.title}\n`;
+                    data.elements.commontimes.value += `${gett(item.start)} ${item.dur} ${item.title}\n`;
                     break;
 
                 case (item.active === 1):
@@ -186,6 +187,8 @@ const main = async (event) => {
             }
 
         }
+
+        data.elements.commontimes.value = data.elements.commontimes.value.trimEnd();
 
         Array.from(data.elements.staff).forEach((option, i) => {
             option.label = data.elements.staffname[i].value;
@@ -382,9 +385,10 @@ const main = async (event) => {
     });
 
     // COMMONTIMES
-    const reg = new RegExp(/^(?<start>(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9])\s(?<title>.+)/, 'm');
+    const reg = new RegExp(/^(?<start>(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9]) (?<dur>[0-9]+)\s(?<title>.+)\n*/, '');
 
     data.elements.commontimes.addEventListener('change', async (event) => {
+        
         let lines = event.target.value.split(/\n/).filter(x => x.length);
 
         if (!event.target.value || event.target.validity.valid) {
@@ -397,12 +401,15 @@ const main = async (event) => {
                 if ((m = reg.exec(lines[n])) !== null) {
                     await tx.appointments.add({
                         id: 'appointment-common-' + n,
+                        dur: parseInt(m.groups.dur),
                         task: 'common',
                         start: getn(m.groups.start),
                         title: m.groups.title,
                         active: 1,
                         user: -1
                     });
+
+                    refresh();
                 } else {
                     console.error('no match');
                 }
@@ -411,10 +418,12 @@ const main = async (event) => {
     });
 
     data.elements.commontimes.addEventListener('input', (event) => {
-
+        
         event.target.setCustomValidity('');
 
-        let lines = event.target.value.split(/\n/)//.filter(x => x.length);
+        const selection = Math.min(event.target.selectionStart, event.target.selectionEnd);
+
+        let lines = event.target.value.split(/\n/);
 
         for (let n = 0; n < lines.length; n++) {
             let tmp = lines.shift();
@@ -432,6 +441,7 @@ const main = async (event) => {
         }
 
         event.target.value = lines.join('\n');
+        event.target.setSelectionRange(selection, selection);
     });
 
     // TEMPLATES
@@ -452,7 +462,7 @@ const main = async (event) => {
     // WEEK
     data.elements.week.addEventListener('change', async (event) => {
         const tx = await berta.write('settings');
-/* console.log(event.target.id) */
+        /* console.log(event.target.id) */
         await tx.settings.put({
             id: event.target.id,
             valueAsNumber: event.target.valueAsNumber
@@ -480,10 +490,6 @@ const main = async (event) => {
     });
 
     // FILEHANDLING
-    if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
-        console.log('OK')
-    }
-
     const pickerOpts = {
         types: [
             {
@@ -521,11 +527,9 @@ const main = async (event) => {
         }
     }
 
-    const openfile = async () => {
+    const readfile = async (fileHandle) => {
 
         try {
-            const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
-            
             const file = await fileHandle.getFile();
             const json = await file.text();
             const obj = JSON.parse(json);
@@ -534,11 +538,11 @@ const main = async (event) => {
             await tx.appointments.clear();
             await tx.settings.clear();
 
-            for(const item of obj.settings) {
+            for (const item of obj.settings) {
                 await tx.settings.put(item);
             }
 
-            for(const item of obj.appointments) {
+            for (const item of obj.appointments) {
                 await tx.appointments.put(item);
             }
 
@@ -546,18 +550,38 @@ const main = async (event) => {
             validate();
 
         } catch (ex) {
+            console.error(ex)
+        }
+    }
+
+    const openfile = async () => {
+
+        try {
+            const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
+
+            readfile(fileHandle);
+
+        } catch (ex) {
             switch (ex.name) {
                 case 'AbortError':
                     break;
                 default:
-                    console.dir(ex)
+                    console.error(ex)
             }
         }
     }
 
+    window.launchQueue.setConsumer(launchParams => {
+        const [fileHandle] = launchParams.files;
+
+        if (fileHandle) {
+            readfile(fileHandle);
+        }
+    });
+
     // first run
     if (berta.updated) {
-        //loadTemplate('template-10-default');
+        loadTemplate('template-10-default');
 
         data.elements.week.valueAsNumber = Date.now();
         data.elements.week.dispatchEvent(new Event('change'));
@@ -568,7 +592,7 @@ const main = async (event) => {
     validate();
     refresh();
 
-    render()
+    render();
 }
 
 addEventListener('load', main);
