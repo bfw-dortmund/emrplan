@@ -4,6 +4,10 @@
         height: 164px;
         font-size: 14px;
         min-width: max-content;
+
+        @media print {
+            display: none;
+        }
     }
 
     div {
@@ -74,9 +78,14 @@
         }
     }
 
+
     select {
-        line-height: 1.35;
+        background: none;
+        border: 1px solid black;
         border-radius: 5px;
+        font-size: 14px;
+        height: 28px;
+        line-height: 1.35;
     }
 
     select[name=templates] {

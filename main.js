@@ -20,7 +20,8 @@ const main = async (event) => {
     const berta = await dberta.open('emrplan', {
         1: {
             appointments: "@id, user, start, staff, task, active",
-            settings: "@id,"
+            settings: "@id,",
+            strings: "@id,"
         }
     });
 
@@ -144,7 +145,13 @@ const main = async (event) => {
 
     async function refresh(id) {
 
-        const tx = await berta.write('appointments', 'settings');
+        const tx = await berta.write('appointments', 'settings', 'strings');
+
+        const strings = await tx.strings.getAll(id);
+
+        for (const item of strings) {
+            data.elements[item.id].value = item.value;
+        }
 
         const settings = await tx.settings.getAll(id);
 
@@ -235,24 +242,22 @@ const main = async (event) => {
 
         elem.addEventListener('change', async (event) => {
 
-            const tx = await berta.write('settings');
+            const tx = await berta.write('strings');
 
             // prevent empty cells
             event.target.value = event.target?.value || event.target.defaultValue;
 
             switch (true) {
                 case (event.target.value !== event.target.defaultValue):
-                    await tx.settings.put({
+                    await tx.strings.put({
                         id: event.target.id,
                         value: event.target.value
                     });
                     break;
 
                 default:
-                    await tx.settings.delete(event.target.id);
+                    await tx.strings.delete(event.target.id);
             }
-            // prevent resetting on reset
-            //elem.setAttribute('value', event.target.value);
 
             refresh();
         });
@@ -461,7 +466,7 @@ const main = async (event) => {
                     break;
                 case 'cancel':
                 default:
-                    refresh(data.elements.templates.id);
+                    refresh();
             }
         }, { once: true })
         dlgconfirm.showModal();
@@ -488,11 +493,11 @@ const main = async (event) => {
             case 'save':
                 savefile();
                 break;
-            case 'saveAs':
-
+            case 'print':
+                print();
                 break;
             case 'close':
-
+                close();
                 break;
         }
     });

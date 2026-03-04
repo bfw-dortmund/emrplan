@@ -20,6 +20,7 @@
         flex-flow: column;
         row-gap: 5mm;
         position: relative;
+        font-family: 'Fira Sans';
         break-after: page;
         padding: 15px;
         page: a4;

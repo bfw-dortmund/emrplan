@@ -1,16 +1,37 @@
 @scope (dialog) {
-    :scope {
+
+    max-width: unset;
+    max-height: unset;
+    border: unset;
+
+    &::backdrop {
+        backdrop-filter: blur(2px);
+    }
+
+    #dlgfile:scope {
         width: 200px;
         height: 100vh;
 
-        max-width: unset;
-        max-height: unset;
-        border: unset;
+        nav {
+            display: flex;
+            flex-flow: column;
+            gap: 16px;
+        }
     }
 
-    nav {
-        display: flex;
-        flex-flow: column;
-        gap: 16px;
+    #dlgconfirm:scope {
+
+        &:open {
+            display: flex;
+            flex-flow: column;
+            justify-content: end;
+            align-items: center;
+        }
+
+        width: 200px;
+        height: fit-content;
+        inset: calc(50% - 100px) calc(50% - 50px);
+        border-radius: 5px;
+        box-shadow: 0 0 5px black;
     }
 }
