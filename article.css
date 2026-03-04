@@ -20,9 +20,9 @@
         flex-flow: column;
         row-gap: 5mm;
         position: relative;
-        page: a4;
         break-after: page;
         padding: 15px;
+        page: a4;
     }
 
     footer {
@@ -66,8 +66,12 @@
         }
 
         & td {
+            &:first-of-type {
+                text-align: end;
+            }
+
             &:last-of-type {
-                padding: 0 0 0 5mm;
+                padding: 0 0 0 .25em;
                 width: 100%;
             }
         }

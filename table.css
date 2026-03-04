@@ -4,6 +4,14 @@
         font-size: 12px;
         border-collapse: collapse;
         min-width: max-content;
+
+        @media print {
+            min-width: unset;
+            width: 260mm !important;
+            translate: -10mm 90mm;
+            rotate: z 90deg;
+            display: table;
+        }
     }
 
     col {
@@ -51,6 +59,10 @@
 }
 
 @scope (form>table>thead) {
+
+    :scope {
+        display: table-header-group;
+    }
 
     input {
         width: 100%;

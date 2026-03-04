@@ -1,3 +1,7 @@
+// MIT License
+
+// Copyright (c) 2026 Stephan Cieszynski
+
 const durations = {
     common: 60,
     checkup: 90,
@@ -37,6 +41,8 @@ const main = async (event) => {
         for (const item of obj.settings) {
             await tx.settings.add(item);
         }
+
+        refresh();
     }
 
     const validate = () => {
@@ -73,7 +79,7 @@ const main = async (event) => {
     }
 
     const render = async () => {
-        const week = new Date(data.elements.week.valueAsNumber);
+        const week = new Date(data.elements.week?.valueAsNumber || 0);
         const instant = week.toTemporalInstant();
         const zdt = instant.toZonedDateTimeISO("UTC");
         const date = zdt.toPlainDate();
@@ -82,7 +88,7 @@ const main = async (event) => {
         const arr1 = await tx.appointments.where('user', dberta.lt(0));
 
         preview.querySelectorAll('article').forEach(async (article, nuser) => {
-            
+
             // cleanup
             article.querySelectorAll('tr').forEach(tr => tr.remove());
 
@@ -102,7 +108,7 @@ const main = async (event) => {
 
             const arr = arr1.concat(arr2)
                 .sort((a, b) => (a.start - b.start));
-                
+
             arr.forEach((item, i) => {
                 const [item1, item2] = arr.slice(i, i + 2);
 
@@ -127,7 +133,7 @@ const main = async (event) => {
 
                 tables[n].insertAdjacentHTML('beforeend', `
                     <tr>
-                        <td>${gett(item.start).substring(3)}</td>
+                        <td>${gett(item.start).substring(3)}&nbsp;Uhr</td>
                         <td>${item.title}</td>
                     </tr>
                 `);
@@ -137,6 +143,7 @@ const main = async (event) => {
     }
 
     async function refresh(id) {
+
         const tx = await berta.write('appointments', 'settings');
 
         const settings = await tx.settings.getAll(id);
@@ -165,7 +172,8 @@ const main = async (event) => {
 
         const appointments = await tx.appointments.getAll(id);
         appointments.sort((a, b) => (a.start - b.start));
-        
+
+        data.elements.appointment.forEach(item => item.value = '');
         data.elements.commontimes.value = '';
 
         for (const item of appointments) {
@@ -217,7 +225,7 @@ const main = async (event) => {
                     tx.settings.delete(event.target.id);
             }
 
-            refresh(event.target.id);
+            refresh();
             render();
         });
     });
@@ -388,7 +396,7 @@ const main = async (event) => {
     const reg = new RegExp(/^(?<start>(?i:MO|DI|MI|DO|FR) [01][0-9]:[0-5][0-9]) (?<dur>[0-9]+)\s(?<title>.+)\n*/, '');
 
     data.elements.commontimes.addEventListener('change', async (event) => {
-        
+
         let lines = event.target.value.split(/\n/).filter(x => x.length);
 
         if (!event.target.value || event.target.validity.valid) {
@@ -418,7 +426,7 @@ const main = async (event) => {
     });
 
     data.elements.commontimes.addEventListener('input', (event) => {
-        
+
         event.target.setCustomValidity('');
 
         const selection = Math.min(event.target.selectionStart, event.target.selectionEnd);
@@ -445,11 +453,11 @@ const main = async (event) => {
     });
 
     // TEMPLATES
-    data.elements.templates.addEventListener('change', async (event) => {
-        dlgconfirm.addEventListener('close', event => {
+    data.elements.templates.addEventListener('change', changeevent => {
+        dlgconfirm.addEventListener('close', async (event) => {
             switch (event.target.returnValue) {
                 case 'confirm':
-                    // TODO
+                    loadTemplate(changeevent.target.value);
                     break;
                 case 'cancel':
                 default:
