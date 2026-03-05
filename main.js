@@ -609,3 +609,13 @@ const main = async (event) => {
 }
 
 addEventListener('load', main);
+
+try {
+    navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+    }).then(registration => {
+        console.log(registration)
+    });
+} catch (error) {
+    console.error(`Registration failed with ${error}`);
+}

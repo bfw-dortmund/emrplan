@@ -13,7 +13,8 @@
 
 <body>
     <p>Installation</p>
-    <button id="installButton" type="button">Installieren</button>
+    <button id="installButton" type="button" hidden>Installieren</button>
+    <button id="startButton" type="button" onclick="location.replace('./')">Starten</button>
     <script>
         let installPrompt = null;
 
@@ -21,6 +22,12 @@
             event.preventDefault();
             installPrompt = event;
             installButton.removeAttribute("hidden");
+            startButton.setAttribute("hidden", "hidden");
+        });
+
+        window.addEventListener("appinstalled", (event) => {
+            console.log("Thank you for installing our app!", event);
+            window.location.replace('./');
         });
 
         installButton.addEventListener("click", async () => {
