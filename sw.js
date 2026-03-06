@@ -1,19 +1,32 @@
-const version = 'v2';
-const old_versions = ['v1']
+const current = 20260306;
+const versions = []
 
-/* const addResourcesToCache = async (resources) => {
-    const cache = await caches.open(version);
-    await cache.addAll(resources);
-};
-
-self.addEventListener("install", (event) => {
+self.addEventListener('install', event => {
     event.waitUntil(
-        addResourcesToCache([
-            "./",
-            "./index.html",
-        ])
-    )
-}); */
+        caches.open(current).then(function (cache) {
+            return cache.addAll([
+                'https://cdn.jsdelivr.net/gh/cieszynski/dberta.js@0.0.1-beta/dberta.min.js',
+                'css/article.css',
+                'css/dialogs.css',
+                'css/header.css',
+                'css/table.css',
+                'fonts/fira-sans-600.woff2',
+                'fonts/fira-sans-italic.woff2',
+                'fonts/fira-sans-regular.woff2',
+                'fonts/segoeuithis-webfont.woff2',
+                'icons/192x192.png',
+                'icons/256x256.png',
+                'icons/512x512.png',
+                'images/bfw-logo.jpg',
+                'index.html',
+                'main.js',
+                'manifest.json',
+                'sw.js',
+                'utils.js'
+            ]);
+        }),
+    );
+});
 
 self.addEventListener('activate', function (event) {
     event.waitUntil(
@@ -25,7 +38,7 @@ self.addEventListener('activate', function (event) {
                         // but remember that caches are shared across
                         // the whole origin
                         console.info(cacheName)
-                        return old_versions.includes(cacheName);
+                        return versions.includes(cacheName);
                     })
                     .map(function (cacheName) {
                         return caches.delete(cacheName);
@@ -37,7 +50,7 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('fetch', function (event) {
     event.respondWith(
-        caches.open(version).then(function (cache) {
+        caches.open(current).then(function (cache) {
             return cache.match(event.request).then(function (response) {
                 return (
                     response ||
