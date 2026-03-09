@@ -36,7 +36,7 @@
         display: flex;
         flex-flow: column;
         justify-content: end;
-        background-image: url(images/bfw-logo.jpg);
+        background-image: url(bfw-logo.jpg);
         background-repeat: no-repeat;
         background-position: 135mm 0mm;
         background-size: 50mm;

@@ -1,10 +1,11 @@
 const current = 20260309;
-const versions = [20260306]
+const versions = []
 
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(current).then(function (cache) {
             return cache.addAll([
+                'css/bfw-logo.jpg',
                 'css/article.css',
                 'css/dialogs.css',
                 'css/header.css',
@@ -15,7 +16,6 @@ self.addEventListener('install', event => {
                 'fonts/segoeuithis-webfont.woff2',
                 'icons/192x192.png',
                 'icons/512x512.png',
-                'images/bfw-logo.jpg',
                 'index.html',
                 'main.js',
                 'manifest.json',
