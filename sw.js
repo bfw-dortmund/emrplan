@@ -14,7 +14,6 @@ self.addEventListener('install', event => {
                 'fonts/fira-sans-regular.woff2',
                 'fonts/segoeuithis-webfont.woff2',
                 'icons/192x192.png',
-                'icons/256x256.png',
                 'icons/512x512.png',
                 'images/bfw-logo.jpg',
                 'index.html',
