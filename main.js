@@ -500,6 +500,9 @@ const main = async (event) => {
                 close();
                 break;
         }
+
+        // reset returnValue
+        event.target.returnValue = '';
     });
 
     // FILEHANDLING
