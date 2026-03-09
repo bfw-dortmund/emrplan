@@ -1,11 +1,10 @@
-const current = 20260306;
-const versions = []
+const current = 20260309;
+const versions = [20260306]
 
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(current).then(function (cache) {
             return cache.addAll([
-                'https://cdn.jsdelivr.net/gh/cieszynski/dberta.js@0.0.1-beta/dberta.min.js',
                 'css/article.css',
                 'css/dialogs.css',
                 'css/header.css',
@@ -21,6 +20,7 @@ self.addEventListener('install', event => {
                 'index.html',
                 'main.js',
                 'manifest.json',
+                'dberta.js',
                 'sw.js',
                 'utils.js'
             ]);
