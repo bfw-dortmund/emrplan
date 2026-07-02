@@ -18,7 +18,6 @@ self.addEventListener('install', event => {
                 'icons/512x512.png',
                 'index.html',
                 'main.js',
-                'manifest.json',
                 'dberta.js',
                 'sw.js',
                 'utils.js'

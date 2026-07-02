@@ -54,6 +54,15 @@
             font-style: italic;
             font-size: 14pt;
         }
+
+        & img {
+            width: 50mm;
+            position: absolute;
+            left: 135mm;
+            top:0;
+        }
+
+        position: relative;
     }
 
     table {

@@ -2,6 +2,8 @@
 
 // Copyright (c) 2026 Stephan Cieszynski
 
+var fh = null;
+
 const durations = {
     common: 60,
     checkup: 90,
@@ -493,11 +495,18 @@ const main = async (event) => {
             case 'save':
                 savefile();
                 break;
+            case 'saveas':
+                savefile(true);
+                break;
             case 'print':
+                render()
                 print();
                 break;
             case 'close':
-                close();
+                if (confirm('Datei speichern?')) {
+                    savefile().then(() => close())
+                } else
+                    close();
                 break;
         }
 
@@ -519,11 +528,13 @@ const main = async (event) => {
         multiple: false,
     };
 
-    const savefile = async () => {
+    const savefile = async (bool) => {
+
+        if (bool) fh = null;
 
         try {
             const result = {}
-            const fileHandle = await window.showSaveFilePicker(pickerOpts);
+            const fileHandle = fh ?? await window.showSaveFilePicker(pickerOpts);
 
             const tx = await berta.read('settings', 'appointments');
             result.settings = await tx.settings.getAll();
@@ -533,6 +544,8 @@ const main = async (event) => {
             await writable.write(JSON.stringify(result));
             await writable.close();
 
+            document.title = fileHandle.name;
+            fh = fileHandle;
         } catch (ex) {
             switch (ex.name) {
                 case 'AbortError':
@@ -562,8 +575,9 @@ const main = async (event) => {
                 await tx.appointments.put(item);
             }
 
-            refresh();
-            validate();
+           await refresh();
+           await validate();
+           await render()
 
         } catch (ex) {
             console.error(ex)
@@ -576,6 +590,8 @@ const main = async (event) => {
             const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
 
             readfile(fileHandle);
+            document.title = fileHandle.name;
+            fh = fileHandle;
 
         } catch (ex) {
             switch (ex.name) {
@@ -592,6 +608,9 @@ const main = async (event) => {
 
         if (fileHandle) {
             readfile(fileHandle);
+
+            document.title = fileHandle.name;
+            fh = fileHandle;
         }
     });
 
@@ -603,7 +622,7 @@ const main = async (event) => {
         data.elements.week.dispatchEvent(new Event('change'));
     }
 
-    addEventListener("beforeprint", (event) => { render() });
+    //addEventListener("beforeprint", (event) => { render() });
 
     validate();
     refresh();
@@ -612,6 +631,12 @@ const main = async (event) => {
 }
 
 addEventListener('load', main);
+addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 's') {
+        // speichert die Webseite, nicht die Daten
+        e.preventDefault();
+    }
+});
 
 try {
     navigator.serviceWorker.register("sw.js")

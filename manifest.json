@@ -1,6 +1,6 @@
 {
     "id": "emrp.cieszynski.de",
-    "name": "EMR PLAN 20260416",
+    "name": "EMR PLAN 20260701",
     "short_name": "EMR PLAN",
     "start_url": "index.html",
     "display": "standalone",
@@ -17,7 +17,7 @@
         }
     ],
     "launch_handler": {
-        "client_mode": "navigate-new"
+        "client_mode": "navigate-existing"
     },
     "file_handlers": [
         {
@@ -34,7 +34,7 @@
                     "type": "image/png"
                 }
             ],
-            "launch_type": "multiple-clients"
+            "launch_type": "single-client"
         }
     ]
 }
